@@ -1,2 +1,3 @@
-# project-mcp
-MCP Server for *
+# MCP
+
+wow
