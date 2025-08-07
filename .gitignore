@@ -135,6 +135,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+backend_env/
 .env
 .envrc
 .venv
@@ -208,3 +209,4 @@ __marimo__/
 
 # Custom
 TODO
+docs/
