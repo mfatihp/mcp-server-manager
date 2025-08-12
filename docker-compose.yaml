@@ -1,3 +1,5 @@
+name: mcp_manager
+
 services:
   mcp_manager_db_pgres:
     image: postgres:17.5-bookworm
@@ -14,11 +16,11 @@ services:
     image: redis:alpine3.22
     ports:
       - "6379:6379"
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    restart: unless-stopped
     volumes:
       - rds_mcp_manager_db:/data
-      - .backend/src/mcp_manager_db/redis.conf:/usr/local/etc/redis/redis.conf
-    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
-    restart: always
+      - ./backend/src/mcp_manager_db/redis.conf:/usr/local/etc/redis/redis.conf
     
 
 
