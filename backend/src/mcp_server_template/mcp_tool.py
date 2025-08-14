@@ -6,9 +6,19 @@ class Tool(MCP):
         super().__init__()
 
 
-    def __call__(self, func):
-        def wrapper(*args, **kwargs):
-            print("Hello mars")
+tool = Tool()
 
-            return func(*args, **kwargs)
-        return wrapper
+
+
+
+
+@tool.get("/")
+def add():
+    return 1 + 2
+
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(tool)
