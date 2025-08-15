@@ -1,36 +1,41 @@
+from handlers.database_handler import DBHandlerPG, DBHandlerRDS
 from fastapi import FastAPI
 import uvicorn
 
 
 core = FastAPI()
 
-db_handler = DBHandler()
+db_handler_pg = DBHandlerPG()
+db_handler_rds = DBHandlerRDS()
 
 
 
 
-#TODO: Check MCP list & status
+# TODO: Check MCP list
 @core.get("/manager/check_list")
 async def check_list():
-    # Check list of all mcp servers
-
-
-
-    # Check status of mcp servers
-
-
+    # TODO: Check list of all mcp servers
     pass
 
 
+# TODO: Check MCP status
+@core.get("/manager/check_status")
+async def check_status():
+    # TODO: Check status of mcp servers
+    pass
 
-#TODO: Create MCP Server
+
+# TODO: Create MCP Server
 @core.post("manager/create_mcp_server")
 async def create_mcp_server(mcp_schema):
+    # TODO: Create mcp server
+
+    # TODO: Register into the dbs.
     pass
 
 
 
-#TODO: Control MCP Servers
+# TODO: Control MCP Servers
 @core.post("manager/control_mcp_server")
 async def control_mcp_server(control_params):
     pass
