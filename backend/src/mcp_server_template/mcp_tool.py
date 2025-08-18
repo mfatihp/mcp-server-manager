@@ -12,13 +12,13 @@ tool = Tool()
 
 
 
-@tool.get("/")
-def add():
-    return 1 + 2
-
 
 
 if __name__ == "__main__":
     import uvicorn
+
+    @tool.get("/")
+    def add():
+        return 1 + 2
 
     uvicorn.run(tool)

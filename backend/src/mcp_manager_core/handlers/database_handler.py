@@ -12,7 +12,7 @@ class DBHandlerPG:
     def __init__(self):
         env_info = dotenv_values("src/mcp_manager_core/.env")
 
-        pg_db_url = f"postgresql+psycopg2://{env_info["AUTH_USER"]}:{env_info["AUTH_PWD"]}@{env_info["AUTH_HOST"]}:{env_info["AUTH_PORT"]}/{env_info["AUTH_DB"]}"
+        pg_db_url = f"postgresql+psycopg2://{env_info["PG_USER"]}:{env_info["PG_PWD"]}@{env_info["PG_HOST"]}:{env_info["PG_PORT"]}/{env_info["PG_DB"]}"
         self.db_engine = create_engine(pg_db_url) 
     
 
