@@ -10,7 +10,6 @@ import { StatsCardComponent } from '../../components/stats-card/stats-card.compo
 })
 export class DashboardPageComponent {
   stats = [
-    { title: 'Active Users', value: 1280, icon: '👤' },
     { title: 'Tools Registered', value: 45, icon: '🛠️' },
     { title: 'Running Agents', value: 12, icon: '🤖' },
     { title: 'Errors Today', value: 3, icon: '⚠️' }
