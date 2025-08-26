@@ -1,4 +1,6 @@
 from handlers.database_handler import DBHandlerPG, DBHandlerRDS
+from handlers.container_handler import DockerHandler
+from handlers.utils.schemas import MCPSchema
 from fastapi import FastAPI
 import uvicorn
 
@@ -7,6 +9,7 @@ core = FastAPI()
 
 db_handler_pg = DBHandlerPG()
 db_handler_rds = DBHandlerRDS()
+docker_handler = DockerHandler()
 
 
 
@@ -27,8 +30,10 @@ async def check_status():
 
 # TODO: Create MCP Server
 @core.post("manager/create_mcp_server")
-async def create_mcp_server(mcp_schema):
+async def create_mcp_server(mcp_schema:MCPSchema):
     # TODO: Create mcp server
+    docker_handler.create(mcp_schema.tag, mcp_schema.port)
+
 
     # TODO: Register into the dbs.
     pass
