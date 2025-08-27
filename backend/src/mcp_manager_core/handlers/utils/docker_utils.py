@@ -22,5 +22,5 @@ def create_dockerfile(base_image="python:3.12.11-bookworm",
     )
 
 
-    with open("test.Dockerfile", "w") as f:
+    with open("src/mcp_server_template/Dockerfile", "w") as f:
         f.write(dockerfile_content)

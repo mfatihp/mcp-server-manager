@@ -14,6 +14,25 @@ docker_handler = DockerHandler()
 
 
 
+
+
+# TODO: Create MCP Server
+@core.post("manager/create_mcp_server")
+async def create_mcp_server(mcp_schema:MCPSchema):
+    # TODO: Create mcp server
+    docker_handler.create()
+
+
+    # TODO: Register into the dbs.
+
+
+
+
+
+
+
+
+
 # TODO: Check MCP list
 @core.get("/manager/check_list")
 async def check_list():
@@ -28,15 +47,8 @@ async def check_status():
     pass
 
 
-# TODO: Create MCP Server
-@core.post("manager/create_mcp_server")
-async def create_mcp_server(mcp_schema:MCPSchema):
-    # TODO: Create mcp server
-    docker_handler.create(mcp_schema.tag, mcp_schema.port)
 
 
-    # TODO: Register into the dbs.
-    pass
 
 
 

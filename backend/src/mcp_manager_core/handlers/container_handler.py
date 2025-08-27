@@ -1,6 +1,7 @@
 import docker
 from dotenv import dotenv_values
-
+from utils.pythonfile_utils import create_tool_file
+from utils.docker_utils import create_dockerfile
 
 
 
@@ -10,14 +11,17 @@ class DockerHandler:
         self.docker_cli = docker.DockerClient(base_url=env_values["DOCKER_URL"])
     
 
-    def create(self, tag, port):
+    def create(self, fname, tag, port):
         try:
-            self.docker_cli.images.build(path="", tag=tag, rm=True)
+            create_tool_file(function_name=fname)
+            create_dockerfile()
 
-            self.docker_cli.containers.run(image=tag, name="", detach=True, ports=port)
+            self.docker_cli.images.build(path="src/mcp_server_template/", tag=tag, rm=True)
 
-        except Exception:
-            raise "Something is not right"
+            # self.docker_cli.containers.run(image=tag, name="", detach=True, ports=port)
+
+        except Exception as e:
+            raise e
 
 
 
@@ -31,3 +35,10 @@ class DockerHandler:
 
     def delete(self, contID:str):
         self.docker_cli.containers.get(container_id=contID).kill()
+
+
+
+
+if __name__ == "__main__":
+    dh = DockerHandler()
+    dh.create(fname="wow", tag="wow:1.0.0", port="8000")
