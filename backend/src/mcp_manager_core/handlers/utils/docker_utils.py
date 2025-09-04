@@ -6,7 +6,8 @@ def create_dockerfile(base_image="python:3.12.11-bookworm",
                       packages=None, 
                       command=None, 
                       port=None, 
-                      project_files=".") -> None:
+                      project_files=".",
+                      requirements=False) -> None:
     
     env = Environment(loader=FileSystemLoader("src/mcp_server_template/dockerfile_templates"))
     template = env.get_template("Dockerfile.j2")
@@ -14,6 +15,7 @@ def create_dockerfile(base_image="python:3.12.11-bookworm",
     command = command
 
     dockerfile_content = template.render(
+        requirements=requirements,
         base_image=base_image,
         packages=packages,
         expose_port=port,

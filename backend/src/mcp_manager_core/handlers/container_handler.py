@@ -14,7 +14,7 @@ class DockerHandler:
     def create(self, fname, tag, port):
         try:
             create_tool_file(function_name=fname)
-            create_dockerfile()
+            create_dockerfile(port=8000)
 
             self.docker_cli.images.build(path="src/mcp_server_template/", tag=tag, rm=True)
 

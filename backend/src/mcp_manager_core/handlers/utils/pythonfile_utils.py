@@ -21,6 +21,10 @@ def create_tool_file(function_name:str="ocaptai"):
         f.write(pythonfile_content)
     
 
+def create_requirements_file():
+    pass
+    
+
     
 
 
