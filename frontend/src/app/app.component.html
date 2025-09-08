@@ -1,33 +1,16 @@
-<!-- app.component.html -->
-<div class="flex h-screen bg-gray-100">
-  <!-- Sidebar -->
-  <aside class="w-64 bg-white shadow-lg flex flex-col">
-    <div class="p-4 text-xl font-bold border-b">MCP Manager</div>
-    <nav class="flex-1 p-4 space-y-2">
-      <a routerLink="/dashboard" routerLinkActive="bg-gray-200 font-semibold"
-         class="block px-3 py-2 rounded hover:bg-gray-100">📊 Dashboard</a>
-      <a routerLink="/dashboard" routerLinkActive="bg-gray-200 font-semibold"
-         class="block px-3 py-2 rounded hover:bg-gray-100">🤖 Agents</a>
-      <a routerLink="/dashboard" routerLinkActive="bg-gray-200 font-semibold"
-         class="block px-3 py-2 rounded hover:bg-gray-100">📦 MCP Tools & Resources</a>
-      <a routerLink="/settings" routerLinkActive="bg-gray-200 font-semibold"
-         class="block px-3 py-2 rounded hover:bg-gray-100">⚙️ Settings</a>
-      <a routerLink="/logs" routerLinkActive="bg-gray-200 font-semibold"
-         class="block px-3 py-2 rounded hover:bg-gray-100">📜 Logs</a>
-    </nav>
-  </aside>
+<nav class="menu">
+  <a [routerLink]="['/']"
+     routerLinkActive="active"
+     [routerLinkActiveOptions]="{ exact: true }">Home</a> | 
+  
+  <a [routerLink]="['/dashboard']"
+     routerLinkActive="active">Dashboard</a> | 
 
-  <!-- Main Content -->
-  <main class="flex-1 flex flex-col">
-    <!-- Topbar -->
-    <header class="h-14 bg-white shadow flex items-center justify-between px-6">
-      <h1 class="text-lg font-semibold">{{ title }}</h1>
-      <button class="bg-gray-100 px-3 py-1 rounded hover:bg-gray-200">Logout</button>
-    </header>
+  <a [routerLink]="['/servers']"
+     routerLinkActive="active">MCP Servers</a>
 
-    <!-- Routed Pages -->
-    <section class="flex-1 p-6 overflow-y-auto">
-      <router-outlet></router-outlet>
-    </section>
-  </main>
-</div>
+</nav>
+
+<hr>
+
+<router-outlet></router-outlet>
