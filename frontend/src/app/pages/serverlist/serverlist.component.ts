@@ -10,9 +10,12 @@ import { ServerCreateComponent } from './components/servercreate/servercreate.co
   templateUrl: './serverlist.component.html'
 })
 export class ServerlistComponent {
+  imageTool = "";
+  imageResource = "";
+
   servers = [
-    { name: 'Server 1', description: 'First server', image: 'https://via.placeholder.com/150' },
-    { name: 'Server 2', description: 'Second server', image: 'https://via.placeholder.com/150' }
+    { name: 'Server 1', description: 'First server', image: '/data-collection.png' },
+    { name: 'Server 2', description: 'Second server', image: '/tool-box.png' }
   ];
 
   showCreateModal = false;
@@ -21,7 +24,18 @@ export class ServerlistComponent {
   deleteServer(index: number) { this.servers.splice(index, 1); }
   editServer(index: number) { alert(`Edit: ${this.servers[index].name}`); }
 
-  addServer(server: { name: string; description: string }) {
-    this.servers.push({ ...server, image: 'https://via.placeholder.com/150' });
+  addServer(server: { name: string; description: string; serverType: string; image: string}) {
+    this.servers.push({ ...server });
+  }
+
+  searchText = '';
+
+  get filteredServers() {
+    if (!this.searchText) return this.servers;
+    const lower = this.searchText.toLowerCase();
+    return this.servers.filter(server =>
+      server.name.toLowerCase().includes(lower) ||
+      server.description.toLowerCase().includes(lower)
+    );
   }
 }

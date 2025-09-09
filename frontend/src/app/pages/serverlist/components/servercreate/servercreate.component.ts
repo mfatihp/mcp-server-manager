@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
 })
 
 export class ServerCreateComponent {
-  @Output() serverCreated = new EventEmitter<{ name: string; description: string }>();
+  @Output() serverCreated = new EventEmitter<{ name: string; description: string; serverType: string; image: string;}>();
   @Output() close = new EventEmitter<void>();
 
   newServerName = '';
@@ -19,13 +19,19 @@ export class ServerCreateComponent {
   codeFunctionName = '';
   codeArgs = '';
   codeBody = '';
-  serverType = '';
+  servertype = '';
+  images: Record<string, string> = {
+    tool: '/tool-box.png',
+    resource: '/data-collection.png'
+  };
 
   createServer() {
     if (!this.newServerName) return;
     this.serverCreated.emit({
       name: this.newServerName,
-      description: this.newServerDesc
+      description: this.newServerDesc,
+      serverType: this.servertype,
+      image: this.images[this.servertype]
     });
     this.newServerName = '';
     this.newServerDesc = '';

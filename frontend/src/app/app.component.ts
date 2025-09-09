@@ -11,4 +11,15 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 
 export class AppComponent {
   title = '';
+
+  isDarkMode = true; // start in dark mode
+
+  toggleDarkMode() {
+    this.isDarkMode = !this.isDarkMode;
+    if (this.isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }
 }

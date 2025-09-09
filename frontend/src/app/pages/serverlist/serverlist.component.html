@@ -1,48 +1,61 @@
-<button (click)="showCreateModal = true" class="mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-  Create MCP Server +
-</button>
+<div class="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300 p-4">
+  <div class="mb-4 flex items-center justify-between gap-2">
+    <button (click)="showCreateModal = true" class="mb-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+      Create MCP Server +
+    </button>
 
-<!-- Server grid -->
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-  <div *ngFor="let server of servers; let i = index" class="relative bg-white rounded-2xl shadow-md border border-gray-200 p-4 flex flex-col items-center hover:shadow-lg transition">
-    <!-- Control buttons top-right -->
-    <div class="absolute top-2 right-2 flex gap-1">
-      <!-- Pause -->
-      <button (click)="pauseServer(i)" class="p-1.5 rounded-full bg-yellow-500 text-white hover:bg-yellow-600" title="Pause">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-          <rect x="6" y="5" width="3.5" height="14" rx="0.8"/>
-          <rect x="14.5" y="5" width="3.5" height="14" rx="0.8"/>
-        </svg>
-      </button>
-
-      <!-- Delete -->
-      <button (click)="deleteServer(i)" class="p-1.5 rounded-full bg-red-500 text-white hover:bg-red-600" title="Delete">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-          <rect x="5" y="4" width="14" height="2" rx="0.8"/>
-          <rect x="9" y="2" width="6" height="2" rx="0.6"/>
-          <rect x="6" y="7" width="12" height="13" rx="1"/>
-        </svg>
-      </button>
-
-      <!-- Edit -->
-      <button (click)="editServer(i)" class="p-1.5 rounded-full bg-blue-500 text-white hover:bg-blue-600" title="Edit">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/>
-          <path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Server content -->
-    <img [src]="server.image" [alt]="server.name" class="w-24 h-24 object-cover rounded mb-3"/>
-    <h3 class="text-lg font-semibold">{{ server.name }}</h3>
-    <p class="text-gray-600 text-sm text-center">{{ server.description }}</p>
+    <!-- Search bar on the right -->
+    <input
+      type="text"
+      [(ngModel)]="searchText"
+      placeholder="Search..."
+      class="w-64 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700
+            bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
+            focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
   </div>
-</div>
+  <!-- Server grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div *ngFor="let server of filteredServers; let i = index" class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 p-4 flex flex-col items-center hover:shadow-lg transition">
+      <!-- Control buttons top-right -->
+      <div class="absolute top-2 right-2 flex gap-1">
+        <!-- Pause -->
+        <button (click)="pauseServer(i)" class="p-1.5 rounded-full bg-yellow-500 text-white hover:bg-yellow-600" title="Pause">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="5" width="3.5" height="14" rx="0.8"/>
+            <rect x="14.5" y="5" width="3.5" height="14" rx="0.8"/>
+          </svg>
+        </button>
 
-<!-- Child modal -->
-<app-server-create
-  *ngIf="showCreateModal"
-  (serverCreated)="addServer($event)"
-  (close)="showCreateModal=false"
-></app-server-create>
+        <!-- Delete -->
+        <button (click)="deleteServer(i)" class="p-1.5 rounded-full bg-red-500 text-white hover:bg-red-600" title="Delete">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="5" y="4" width="14" height="2" rx="0.8"/>
+            <rect x="9" y="2" width="6" height="2" rx="0.6"/>
+            <rect x="6" y="7" width="12" height="13" rx="1"/>
+          </svg>
+        </button>
+
+        <!-- Edit -->
+        <button (click)="editServer(i)" class="p-1.5 rounded-full bg-blue-500 text-white hover:bg-blue-600" title="Edit">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/>
+            <path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Server content -->
+      <img [src]="server.image" [alt]="server.name" class="w-24 h-24 object-cover rounded mb-3"/>
+      <h3 class="text-lg dark:text-white">{{ server.name }}</h3>
+      <p class="text-gray-600 dark:text-white text-center">{{ server.description }}</p>
+    </div>
+  </div>
+
+  <!-- Child modal -->
+  <app-server-create
+    *ngIf="showCreateModal"
+    (serverCreated)="addServer($event)"
+    (close)="showCreateModal=false"
+  ></app-server-create>
+</div>
