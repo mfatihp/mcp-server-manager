@@ -21,8 +21,8 @@ export class ServerCreateComponent {
   codeBody = '';
   servertype = '';
   images: Record<string, string> = {
-    tool: '/tool-box.png',
-    resource: '/data-collection.png'
+    tool: '/tool.png',
+    resource: '/resource.png'
   };
 
   createServer() {

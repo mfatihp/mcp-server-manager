@@ -1,9 +1,8 @@
-<!-- Navbar -->
+<!-- Navbar
 <nav class="w-full px-6 py-3 flex items-center justify-between
             bg-gray-100 text-gray-900 shadow-md
             dark:bg-violet-950 dark:text-gray-100">
    
-   <!-- Left side: App name / logo -->
    <div class="text-lg font-bold tracking-wide">
       MCP Manager
    </div>
@@ -19,8 +18,6 @@
       routerLinkActive="active">MCP Servers</a>
 
    <div class="flex justify-end p-4">
-   <div class="flex justify-end p-4">
-      <!-- Right side: Dark mode toggle -->
       <label class="relative inline-flex items-center cursor-pointer">
          <input type="checkbox" [checked]="isDarkMode" (change)="toggleDarkMode()" class="sr-only peer">
          <div
@@ -36,11 +33,26 @@
          </span>
       </label>
    </div>
-</div>
-   
-
 </nav>
+  <div class="flex flex-1">
+    <aside class="w-64 bg-white dark:bg-gray-800 shadow-md p-4 space-y-2">
+      <a routerLink="/servers" routerLinkActive="bg-gray-200 dark:bg-gray-700"
+         class="block px-4 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+        Servers
+      </a>
+      <a routerLink="/logs" routerLinkActive="bg-gray-200 dark:bg-gray-700"
+         class="block px-4 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+        Logs
+      </a>
+      <a routerLink="/settings" routerLinkActive="bg-gray-200 dark:bg-gray-700"
+         class="block px-4 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+        Settings
+      </a>
+    </aside>
+  </div>
 
 <hr>
+
+<router-outlet></router-outlet> -->
 
 <router-outlet></router-outlet>

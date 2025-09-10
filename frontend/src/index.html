@@ -11,3 +11,11 @@
   <app-root></app-root>
 </body>
 </html>
+<script>
+  (function() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    }
+  })();
+</script>

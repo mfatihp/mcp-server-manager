@@ -14,8 +14,8 @@ export class ServerlistComponent {
   imageResource = "";
 
   servers = [
-    { name: 'Server 1', description: 'First server', image: '/data-collection.png' },
-    { name: 'Server 2', description: 'Second server', image: '/tool-box.png' }
+    { name: 'Server 1', description: 'First server', image: '/resource.png' },
+    { name: 'Server 2', description: 'Second server', image: '/tool.png' }
   ];
 
   showCreateModal = false;

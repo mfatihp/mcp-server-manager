@@ -1,17 +1,14 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-// import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+
 
 @Component({
-  selector: 'app-root',
-  imports: [RouterOutlet], //RouterLink, RouterLinkActive
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  selector: 'app-main-layout',
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  templateUrl: './main-layout.component.html'
 })
-
-export class AppComponent {
-  title = '';
-
+export class MainLayoutComponent {
   isDarkMode = false;
 
   ngOnInit() {

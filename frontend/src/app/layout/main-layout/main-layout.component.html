@@ -1,0 +1,40 @@
+<div class="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+  <!-- Navbar -->
+  <header class="flex items-center justify-between px-6 py-3 bg-white dark:bg-violet-900 shadow-md">
+    <h1 class="text-xl font-bold">MCP Dashboard</h1>
+
+    <!-- Right side: dark mode toggle -->
+    <button (click)="toggleDarkMode()"
+            class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+      {{ isDarkMode ? '☀ Light Mode' : '🌙 Dark Mode' }}
+    </button>
+  </header>
+
+  <!-- Layout: Sidebar + Content -->
+  <div class="flex flex-1">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white dark:bg-violet-950 shadow-md p-4 space-y-2">
+      <a routerLink="/" routerLinkActive="bg-gray-200 dark:bg-gray-700"  [routerLinkActiveOptions]="{ exact: true }"
+         class="block px-4 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+        Home
+      </a>
+      <a routerLink="/dashboard" routerLinkActive="bg-gray-200 dark:bg-gray-700"  [routerLinkActiveOptions]="{ exact: true }"
+         class="block px-4 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+        Dashboard
+      </a>
+      <a routerLink="/servers" routerLinkActive="bg-gray-200 dark:bg-gray-700" [routerLinkActiveOptions]="{ exact: true }"
+         class="block px-4 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+        MCP Servers
+      </a>
+      <a routerLink="/chat" routerLinkActive="bg-gray-200 dark:bg-gray-700" [routerLinkActiveOptions]="{ exact: true }"
+         class="block px-4 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+        Chat
+      </a>
+    </aside>
+
+    <!-- Main Page Content -->
+    <main class="flex-1 p-6 overflow-y-auto">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
