@@ -1,6 +1,6 @@
 from handlers.database_handler import DBHandlerPG, DBHandlerRDS
 from handlers.container_handler import DockerHandler
-from handlers.utils.schemas import MCPSchema
+from handlers.utils.schemas import MCPSchema, MCPControlSchema
 from fastapi import FastAPI
 import uvicorn
 
@@ -54,7 +54,7 @@ async def check_status():
 
 # TODO: Control MCP Servers
 @core.post("manager/control_mcp_server")
-async def control_mcp_server(control_params):
+async def control_mcp_server(control_params: MCPControlSchema):
     pass
 
 
