@@ -1,4 +1,4 @@
-<div class="flex flex-col h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+<div class="flex flex-col h-screen overflow-hidden bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
   <!-- Navbar -->
   <header class="flex items-center justify-between px-6 py-3 bg-white dark:bg-violet-900 shadow-md">
     <h1 class="text-xl font-bold">MCP Dashboard</h1>
@@ -11,14 +11,14 @@
   </header>
 
   <!-- Layout: Sidebar + Content -->
-  <div class="flex flex-1">
+  <div class="flex flex-1 overflow-hidden">
     <!-- Sidebar -->
-    <aside class="w-64 bg-white dark:bg-violet-950 shadow-md p-4 space-y-2">
-      <a routerLink="/" routerLinkActive="bg-gray-200 dark:bg-gray-700"  [routerLinkActiveOptions]="{ exact: true }"
+    <aside class="w-64 bg-white dark:bg-violet-950 shadow-md p-4 space-y-2 overflow-y-auto">
+      <a routerLink="/" routerLinkActive="bg-gray-200 dark:bg-gray-700" [routerLinkActiveOptions]="{ exact: true }"
          class="block px-4 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition">
         Home
       </a>
-      <a routerLink="/dashboard" routerLinkActive="bg-gray-200 dark:bg-gray-700"  [routerLinkActiveOptions]="{ exact: true }"
+      <a routerLink="/dashboard" routerLinkActive="bg-gray-200 dark:bg-gray-700" [routerLinkActiveOptions]="{ exact: true }"
          class="block px-4 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition">
         Dashboard
       </a>
