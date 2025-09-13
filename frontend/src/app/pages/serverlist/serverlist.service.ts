@@ -8,31 +8,55 @@ export class ServerlistService {
 
   private mcpCreateUrl = 'http://localhost:8000/manager/create_mcp_server';
   private mcpControlUrl = 'http://localhost:8000/manager/control_mcp_server';
+  private mcpCheckListUrl = 'http://localhost:8000/manager/check_list';
 
   constructor(private http: HttpClient) { }
 
+  // TODO: Create empty list and schema for items
   servers = [
     { name: 'Server 1', description: 'First server', image: '/resource.png' },
     { name: 'Server 2', description: 'Second server', image: '/tool.png' }
   ];
 
-  pauseServer(index: number) { 
+  getServers() {
+    this.http.get(this.mcpCheckListUrl, {});
+    return this.servers;
+  }
+
+  pauseMCPServer(index: number, body: string) { 
     alert(`Paused: ${this.servers[index].name}`);
 
-    this.http.post(this.mcpControlUrl, {}); // TODO: Create message body
+    this.http.post(this.mcpControlUrl, {
+      serverId: "",
+      controlCommand: "pause"
+    });
   }
   
-  deleteServer(index: number) { 
+  deleteMCPServer(index: number) { 
     this.servers.splice(index, 1); 
 
-    this.http.post(this.mcpControlUrl, {}); // TODO: Create message body
+    this.http.post(this.mcpControlUrl, {
+      serverId: "",
+      controlCommand: "delete"
+    });
   }
   
-  editServer(index: number) { 
-    alert(`Edit: ${this.servers[index].name}`); 
+  editMCPServer(index: number) { 
+    alert(`Edit: ${this.servers[index].name}`);
+
+    this.http.post(this.mcpControlUrl, {
+      serverId: "",
+      controlCommand: "edit",
+      controlParams: {
+          server_name: "",
+          description: "",
+          func: "",
+          servertype: ""
+      }
+    });    
   }
 
-  addServer(server: { name: string; description: string; serverType: string; image: string}) {
+  addMCPServer(server: { name: string; description: string; serverType: string; image: string}) {
     this.servers.push({ ...server });
 
     this.http.post(this.mcpCreateUrl, {}); // TODO: Create message body

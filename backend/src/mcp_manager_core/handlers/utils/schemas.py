@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List, Optional
 
 
 
@@ -9,6 +10,14 @@ class MCPSchema(BaseModel):
     port:str
 
 
+class ControlParams(BaseModel):
+    server_name: Optional[str]
+    description: Optional[str]
+    func: Optional[str]
+    servertype: Optional[str]
+
+
 class MCPControlSchema(BaseModel):
-    serverName: str
-    controlType: str
+    serverId: str
+    controlCommand: str
+    controlParams: List[ControlParams]

@@ -3,7 +3,10 @@ from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
 from dotenv import dotenv_values
 
+from typing import Dict, Any
+
 import redis
+from redis.commands.json.path import Path
 
 
 ################################## POSTGRESQL ###################################
@@ -58,22 +61,25 @@ class DBHandlerRDS:
         self.redis_db_conn = redis.Redis(host=env_info["RDS_HOST"], port=env_info["RDS_PORT"], decode_responses=True)
 
 
-    def db_read(self):
+    def db_read(self, contId: str):
         """Status check function for redis."""
-        pass
+        self.redis_db_conn.json().get(contId)
 
 
-    def db_insert(self):
+    def db_insert(self, contId: str, contInfo: Dict[str, Any]):
         """Insert new mcp server names and statuses into redis."""
-        pass
+        # Redis key -> "<type>:<id>"
+        self.redis_db_conn.set(f"contId:{contId}", value=contInfo)
 
 
-    def db_update(self):
+    def db_update(self, contId: str):
         """Update mcp status in redis"""
+        # TODO: Edit (Modify veya Update) yöntemi çalışılacak.
+        # self.redis_db_conn.json().set(f"contId:{contId}", )
         pass
 
 
-    def db_delete(self):
+    def db_delete(self, contId: str):
         """Delete mcp server data from redis"""
-        pass
+        self.redis_db_conn.delete(contId)
         

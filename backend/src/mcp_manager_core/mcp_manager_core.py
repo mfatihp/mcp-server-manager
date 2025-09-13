@@ -20,13 +20,11 @@ docker_handler = DockerHandler()
 @core.post("manager/create_mcp_server")
 async def create_mcp_server(mcp_schema:MCPSchema):
     # TODO: Create mcp server
-    docker_handler.create()
+    container_info = docker_handler.create()
 
 
     # TODO: Register into the dbs.
-
-
-
+    db_handler_rds.db_insert()
 
 
 
@@ -40,13 +38,17 @@ async def check_list():
     pass
 
 
+
+
+
 # TODO: Check MCP status
 @core.get("/manager/check_status")
-async def check_status():
-    # TODO: Check status of mcp servers
+async def check_status():    # TODO: Check status of mcp servers
     pass
 
 
+
+##########################################################################################################################
 
 
 
@@ -55,7 +57,34 @@ async def check_status():
 # TODO: Control MCP Servers
 @core.post("manager/control_mcp_server")
 async def control_mcp_server(control_params: MCPControlSchema):
-    pass
+    match control_params.controlCommand:
+        case "pause":
+            docker_handler.pause(contID=control_params.serverId)
+        case "delete":
+            docker_handler.delete(contID=control_params.serverId)
+        case "restart":
+            docker_handler.restart(contID=control_params.serverId)
+        case "edit":
+            # TODO: Edit için docker fonksiyonu oluştur. [Opsiyonel]
+            pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+##########################################################################################################################
+
+
+
+
 
 
 

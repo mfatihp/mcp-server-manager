@@ -18,7 +18,15 @@ class DockerHandler:
 
             self.docker_cli.images.build(path="src/mcp_server_template/", tag=tag, rm=True)
 
-            # self.docker_cli.containers.run(image=tag, name="", detach=True, ports=port)
+            # container = self.docker_cli.containers.run(image=tag, name="", detach=True, ports=port)
+
+            # TODO: Docker ile otomatik port ataması yapılacak.
+            # container.reload()
+            # container_port = container.attrs['NetworkSettings]['Ports']['80/tcp'][0]['HostPort']
+            # return "Container Info"
+
+
+            # TODO: Redis DB'ye container bilgisi aktarılacak.
 
         except Exception as e:
             raise e

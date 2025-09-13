@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ServerCreateComponent } from './components/servercreate/servercreate.component';
@@ -11,20 +11,48 @@ import { ServerlistService } from './serverlist.service';
   templateUrl: './serverlist.component.html'
 })
 
-export class ServerlistComponent {
-  constructor(private listservice: ServerlistService) {}
+export class ServerlistComponent implements OnInit {
+  constructor(private service: ServerlistService) {}
+
+  servers!: string[];
+
+  ngOnInit(): void {
+    this.servers = this.service.getServers();
+  }
+
+  // servers = [
+  //   { name: 'Server 1', description: 'First server', image: '/resource.png' },
+  //   { name: 'Server 2', description: 'Second server', image: '/tool.png' }
+  // ];
 
   showCreateModal = false;
+
+  pauseServer(index: number) { 
+    alert(`Paused: ${this.servers[index].name}`); 
+    this.service.pauseMCPServer(index, this.servers[index].name); // TODO: Create message body, replace name property
+  }
+  
+  deleteServer(index: number) { 
+    this.servers.splice(index, 1); 
+  }
+  
+  editServer(index: number) { 
+    alert(`Edit: ${this.servers[index].name}`); 
+  }
+
+  addServer(server: { name: string; description: string; serverType: string; image: string}) {
+    this.servers.push({ ...server });
+  }
 
   // Search and filter
   searchText = '';
 
   get filteredServers() {
-    if (!this.searchText) return this.listservice;
+    if (!this.searchText) return this.servers;
     
     const lower = this.searchText.toLowerCase();
     
-    return this.listservice.servers.filter(server =>
+    return this.servers.filter(server =>
       server.name.toLowerCase().includes(lower) ||
       server.description.toLowerCase().includes(lower)
     );
