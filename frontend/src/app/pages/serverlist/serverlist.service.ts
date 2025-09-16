@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class ServerlistService {
   constructor(private http: HttpClient) { }
 
   // TODO: Create empty list and schema for items
+  // servers!: { name: string, description: string, image: string}[];
   servers = [
     { name: 'Server 1', description: 'First server', image: '/resource.png' },
     { name: 'Server 2', description: 'Second server', image: '/tool.png' }
@@ -57,8 +59,14 @@ export class ServerlistService {
   }
 
   addMCPServer(server: { name: string; description: string; serverType: string; image: string}) {
-    this.servers.push({ ...server });
+    console.log("Frontend")
+    // this.servers.push({ ...server });
 
-    this.http.post(this.mcpCreateUrl, {}); // TODO: Create message body
+    // Request doğru çalışmıyor. 
+    this.http.post(this.mcpCreateUrl, server).subscribe(response => {
+      console.log("Success:", response);},
+      error => {
+        console.log("Error:", error);
+    });
   }
 }

@@ -10,6 +10,14 @@ class MCPSchema(BaseModel):
     port:str
 
 
+class MCPCreateSchema(BaseModel):
+    server_name: str
+    description: str
+    func: str
+    servertype: str
+
+
+
 class ControlParams(BaseModel):
     server_name: Optional[str]
     description: Optional[str]

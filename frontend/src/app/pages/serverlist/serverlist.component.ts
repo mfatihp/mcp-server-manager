@@ -14,16 +14,12 @@ import { ServerlistService } from './serverlist.service';
 export class ServerlistComponent implements OnInit {
   constructor(private service: ServerlistService) {}
 
-  servers!: string[];
+  servers!: { name: string, description: string, image: string}[];
 
   ngOnInit(): void {
     this.servers = this.service.getServers();
   }
 
-  // servers = [
-  //   { name: 'Server 1', description: 'First server', image: '/resource.png' },
-  //   { name: 'Server 2', description: 'Second server', image: '/tool.png' }
-  // ];
 
   showCreateModal = false;
 
@@ -42,6 +38,7 @@ export class ServerlistComponent implements OnInit {
 
   addServer(server: { name: string; description: string; serverType: string; image: string}) {
     this.servers.push({ ...server });
+    this.service.addMCPServer(server);
   }
 
   // Search and filter

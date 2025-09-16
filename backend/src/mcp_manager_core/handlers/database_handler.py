@@ -57,19 +57,20 @@ class DBHandlerPG:
 class DBHandlerRDS:
     """Redis database handler"""
     def __init__(self):
-        env_info = dotenv_values("src/mcp_manager_core/.env")
-        self.redis_db_conn = redis.Redis(host=env_info["RDS_HOST"], port=env_info["RDS_PORT"], decode_responses=True)
+        # env_info = dotenv_values("src/mcp_manager_core/.env")
+        # self.redis_db_conn = redis.Redis(host=env_info["RDS_HOST"], port=env_info["RDS_PORT"], decode_responses=True)
+        self.redis_db_conn = redis.Redis(host="localhost", port=6379, decode_responses=True)
 
 
     def db_read(self, contId: str):
         """Status check function for redis."""
-        self.redis_db_conn.json().get(contId)
+        return self.redis_db_conn.json().get(contId)
 
 
     def db_insert(self, contId: str, contInfo: Dict[str, Any]):
         """Insert new mcp server names and statuses into redis."""
         # Redis key -> "<type>:<id>"
-        self.redis_db_conn.set(f"contId:{contId}", value=contInfo)
+        self.redis_db_conn.json().set(f"contId:{contId}", "$", contInfo)
 
 
     def db_update(self, contId: str):
@@ -83,3 +84,16 @@ class DBHandlerRDS:
         """Delete mcp server data from redis"""
         self.redis_db_conn.delete(contId)
         
+
+
+
+
+if __name__ == "__main__":
+    test_db = DBHandlerRDS()
+    test_db.db_insert(contId="1", contInfo={"name":"tool_1", "description":"Some explanation"})
+
+    print(test_db.db_read(contId="contId:1"))
+
+    test_db.db_delete(contId="contId:1")
+
+    print(test_db.db_read(contId="contId:1"))
