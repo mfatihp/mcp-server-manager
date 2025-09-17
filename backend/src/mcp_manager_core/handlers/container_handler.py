@@ -7,16 +7,21 @@ from handlers.utils.docker_utils import create_dockerfile
 
 class DockerHandler:
     def __init__(self):
-        env_values = dotenv_values("src/mcp_manager_core/.env")
+        env_values = dotenv_values(".env")
         self.docker_cli = docker.DockerClient(base_url=env_values["DOCKER_URL"])
     
 
-    def create(self, fname, tag, port):
+    def create(self, fname, ftype, fargs, fbody, tag, port):
         try:
-            create_tool_file(function_name=fname)
-            create_dockerfile(port=8000)
+            create_tool_file(function_name=fname,
+                             function_type=ftype,
+                             func_args=fargs,
+                             func_body=fbody)
+            
+            create_dockerfile(tool_name=fname,
+                              port=port)
 
-            self.docker_cli.images.build(path="src/mcp_server_template/", tag=tag, rm=True)
+            # self.docker_cli.images.build(path="src/mcp_server_template/", tag=tag, rm=True)
 
             # container = self.docker_cli.containers.run(image=tag, name="", detach=True, ports=port)
 
@@ -24,9 +29,6 @@ class DockerHandler:
             # container.reload()
             # container_port = container.attrs['NetworkSettings]['Ports']['80/tcp'][0]['HostPort']
             # return "Container Info"
-
-
-            # TODO: Redis DB'ye container bilgisi aktarılacak.
 
         except Exception as e:
             raise e

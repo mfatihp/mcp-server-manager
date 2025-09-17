@@ -11,6 +11,10 @@ export class ServerlistService {
   private mcpControlUrl = 'http://localhost:8000/manager/control_mcp_server';
   private mcpCheckListUrl = 'http://localhost:8000/manager/check_list';
 
+  private func = "";
+
+  mcp_schema!: {"server_name": string, "description": string, "func": string, "servertype": string };
+
   constructor(private http: HttpClient) { }
 
   // TODO: Create empty list and schema for items
@@ -62,8 +66,15 @@ export class ServerlistService {
     console.log("Frontend")
     // this.servers.push({ ...server });
 
+
+    this.mcp_schema = {"server_name": server.name, 
+                        "description": server.description,
+                        "func": "Test", 
+                        "servertype": server.serverType
+                      }
+
     // Request doğru çalışmıyor. 
-    this.http.post(this.mcpCreateUrl, server).subscribe(response => {
+    this.http.post(this.mcpCreateUrl, this.mcp_schema).subscribe(response => {
       console.log("Success:", response);},
       error => {
         console.log("Error:", error);

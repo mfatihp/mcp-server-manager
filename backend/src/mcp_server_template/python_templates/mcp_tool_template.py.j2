@@ -5,8 +5,7 @@ from mcp_utils.mcp_resource import Resource
 {% endif %}
 
 
-{{ "tool" if o_type == "tool" else "resource" }} = {{ "Tool" if o_type == "tool" else "Resource" }}()
+{{ o_type }} = {{ "Tool" if o_type == "tool" else "Resource" }}()
 
-
-@tool.get("/{{name}}")
+@{{ o_type }}.get("/{{name}}")
 {{- mcp_function }}

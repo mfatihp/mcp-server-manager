@@ -18,4 +18,4 @@ RUN pip install --no-cache-dir -r user_requirements.txt
 
 EXPOSE {{ expose_port }}
 
-CMD ["uvicorn", "{{ command }}", "--host", "0.0.0.0", "--port", "{{ expose_port }}"]
+CMD ["uvicorn", "mcp:{{ tool_name }}", "--host", "0.0.0.0", "--port", "{{ expose_port }}"]

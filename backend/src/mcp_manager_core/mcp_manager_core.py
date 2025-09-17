@@ -19,32 +19,27 @@ core.add_middleware(
 
 # db_handler_pg = DBHandlerPG()
 db_handler_rds = DBHandlerRDS()
-# docker_handler = DockerHandler()
-
-
+docker_handler = DockerHandler()
 
 
 
 
 # TODO: Create MCP Server
-# FIXME: 422 Unprocessable Entity hatası var. Muhtemelen Schema ile request body uyumlu değil.
 @core.post("/manager/create_mcp_server")
 async def create_mcp_server(mcp_schema:MCPCreateSchema):
-    schema_obj = await mcp_schema
-    # TODO: Create mcp server
-    # container_info = docker_handler.create()
-    print("Triggered...")
-
     redis_entry = {
-        "server_name":schema_obj.server_name,
-        "description":schema_obj.description,
-        "server_type": schema_obj.servertype,
-        "func":schema_obj.func,
+        "server_name":mcp_schema.server_name,
+        "description":mcp_schema.description,
+        "server_type": mcp_schema.servertype,
+        "func":mcp_schema.func,
     }
 
+    container_info = docker_handler.create(fname=mcp_schema.server_name, 
+                                           ftype=mcp_schema.servertype, 
+                                           fargs="c: int, d: int", fbody="    return c + d", tag="sometag:1.0.0", port=50001)
 
     # TODO: Register into the dbs.
-    db_handler_rds.db_insert(contId="1", contInfo=redis_entry)
+    db_handler_rds.db_insert(contId=container_info, contInfo=redis_entry)
 
 
 
