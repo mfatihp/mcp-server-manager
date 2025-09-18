@@ -13,7 +13,7 @@ export class ServerlistService {
 
   private func = "";
 
-  mcp_schema!: {"server_name": string, "description": string, "func": string, "servertype": string };
+  mcp_schema!: {"server_name": string, "description": string, "func": string, "servertype": string; "pkgs": string[] };
 
   constructor(private http: HttpClient) { }
 
@@ -62,7 +62,7 @@ export class ServerlistService {
     });    
   }
 
-  addMCPServer(server: { name: string; description: string; serverType: string; image: string}) {
+  addMCPServer(server: { name: string; description: string; serverType: string; image: string; pkgs: string[]}) {
     console.log("Frontend")
     // this.servers.push({ ...server });
 
@@ -70,7 +70,8 @@ export class ServerlistService {
     this.mcp_schema = {"server_name": server.name, 
                         "description": server.description,
                         "func": "Test", 
-                        "servertype": server.serverType
+                        "servertype": server.serverType,
+                        "pkgs": server.pkgs
                       }
 
     // Request doğru çalışmıyor. 

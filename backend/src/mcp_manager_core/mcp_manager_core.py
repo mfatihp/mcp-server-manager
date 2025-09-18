@@ -32,14 +32,19 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
         "description":mcp_schema.description,
         "server_type": mcp_schema.servertype,
         "func":mcp_schema.func,
+        "pkgs":mcp_schema.pkgs
     }
 
-    container_info = docker_handler.create(fname=mcp_schema.server_name, 
-                                           ftype=mcp_schema.servertype, 
-                                           fargs="c: int, d: int", fbody="    return c + d", tag="sometag:1.0.0", port=50001)
+    # TODO: Paket isimlerinin yükleme komutları ile eşlenmesi için bir dict veya db kurulacak
 
-    # TODO: Register into the dbs.
-    db_handler_rds.db_insert(contId=container_info, contInfo=redis_entry)
+    print(redis_entry)
+
+    # container_info = docker_handler.create(fname=mcp_schema.server_name, 
+    #                                        ftype=mcp_schema.servertype, 
+    #                                        fargs="c: int, d: int", fbody="    return c + d", tag="sometag:1.0.0", port=50001)
+
+    # # TODO: Register into the dbs.
+    # db_handler_rds.db_insert(contId=container_info, contInfo=redis_entry)
 
 
 

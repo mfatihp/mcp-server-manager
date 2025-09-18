@@ -15,6 +15,7 @@ class MCPCreateSchema(BaseModel):
     description: str
     func: str
     servertype: str
+    pkgs: List[str]
 
 
 

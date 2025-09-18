@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
 })
 
 export class ServerCreateComponent {
-  @Output() serverCreated = new EventEmitter<{ name: string; description: string; serverType: string; image: string;}>();
+  @Output() serverCreated = new EventEmitter<{ name: string; description: string; serverType: string; image: string; pkgs: string[]}>();
   @Output() close = new EventEmitter<void>();
 
   newServerName = '';
@@ -25,13 +25,43 @@ export class ServerCreateComponent {
     resource: '/resource.png'
   };
 
+  searchTerm = '';
+  selectedPackages: string[] = [];
+
+  examplePackages = [
+    { name: "numpy", description: "Fundamental package for array computing in Python" },
+    { name: "pandas", description: "Data analysis and manipulation tool" },
+    { name: "requests", description: "HTTP library for Python" },
+    { name: "matplotlib", description: "2D plotting library" },
+    { name: "scikit-learn", description: "Machine learning in Python" }
+  ];
+
+  togglePackage(pkg: string) {
+    if (this.selectedPackages.includes(pkg)) {
+      this.selectedPackages = this.selectedPackages.filter(p => p !== pkg);
+    } else {
+      this.selectedPackages.push(pkg);
+    }
+  }
+
+  isSelected(pkg: string): boolean {
+    return this.selectedPackages.includes(pkg);
+  }
+
+  get filteredPackages() {
+    return this.examplePackages.filter(p =>
+      p.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
+  }
+
   createServer() {
     if (!this.newServerName) return;
     this.serverCreated.emit({
       name: this.newServerName,
       description: this.newServerDesc,
       serverType: this.servertype,
-      image: this.images[this.servertype]
+      image: this.images[this.servertype],
+      pkgs: this.selectedPackages
     });
     this.newServerName = '';
     this.newServerDesc = '';

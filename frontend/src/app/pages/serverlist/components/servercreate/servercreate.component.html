@@ -10,28 +10,74 @@
       <!-- Left: Server form -->
       <div class="flex-1 flex flex-col h-full gap-3">
         <input type="text" placeholder="Server Name" class="border rounded p-2 w-full" [(ngModel)]="newServerName" />
-        <textarea placeholder="Description" class="border rounded p-2 w-full flex-1" [(ngModel)]="newServerDesc"></textarea>
-      </div>
 
-      <!-- Right: Radio buttons (top) + Python code (bottom) -->
-      <div class="flex-1 flex flex-col gap-3 h-full">
-        <!-- Top: Radio buttons -->
-        <div class="flex-1 flex flex-col border rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
-          <h4 class="font-semibold mb-3">Choose MCP server type</h4>
-          <div class="flex flex-col gap-2">
-            <label class="flex items-center gap-2">
-              <input type="radio" name="type" value="tool" [(ngModel)]="servertype" class="form-radio h-5 w-5 text-blue-600">
+        <!-- Top: Radio buttons (compact) -->
+        <div class="flex flex-col border rounded-lg p-2 bg-gray-50 dark:bg-gray-800">
+          <h4 class="text-sm font-semibold mb-2">Server Type</h4>
+          <div class="flex gap-4">
+            <label class="flex items-center gap-1 text-sm">
+              <input type="radio" name="type" value="tool" [(ngModel)]="servertype" class="h-4 w-4 text-blue-600">
               Tool
             </label>
-            <label class="flex items-center gap-2">
-              <input type="radio" name="type" value="resource" [(ngModel)]="servertype" class="form-radio h-5 w-5 text-blue-600">
+            <label class="flex items-center gap-1 text-sm">
+              <input type="radio" name="type" value="resource" [(ngModel)]="servertype" class="h-4 w-4 text-blue-600">
               Resource
             </label>
           </div>
         </div>
 
+        <textarea placeholder="Description" class="border rounded p-2 w-full flex-1" [(ngModel)]="newServerDesc"></textarea>
+      </div>
+
+      <!-- Right: Radio buttons (top) + Python code (bottom) -->
+      <div class="flex-1 flex flex-col gap-3 h-full">
+        
+      
+        <!-- Middle: Python Package Selector -->
+        <div class="flex flex-col border rounded-lg p-3 bg-gray-50 dark:bg-gray-800 flex-shrink max-h-60 overflow-hidden min-h-32">
+          <h4 class="text-sm font-semibold mb-2">Select Python Packages</h4>
+
+          <!-- Search box -->
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            placeholder="Search packages..."
+            class="w-full p-2 mb-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-gray-100 text-sm"
+          />
+
+          <!-- Package list -->
+          <div class="space-y-1 overflow-y-auto flex-1 pr-1">
+            <div *ngFor="let pkg of filteredPackages"
+                (click)="togglePackage(pkg.name)"
+                class="flex items-start p-2 rounded-lg cursor-pointer border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition text-sm">
+              <input type="checkbox"
+                    [checked]="isSelected(pkg.name)"
+                    class="mt-1 mr-2"
+                    (click)="$event.stopPropagation(); togglePackage(pkg.name)" />
+
+              <div class="overflow-hidden">
+                <div class="font-medium truncate">{{ pkg.name }}</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ pkg.description }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selected packages -->
+          <div class="mt-2">
+            <h3 class="text-xs font-medium">Selected:</h3>
+            <div class="flex flex-wrap gap-1 mt-1">
+              <span *ngFor="let pkg of selectedPackages"
+                    class="bg-violet-600 text-white px-2 py-0.5 rounded-full text-xs">
+                {{ pkg }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+
+
         <!-- Bottom: Python code editor -->
-        <div class="flex-1 flex flex-col border rounded-lg p-2 bg-gray-900 text-green-400 font-mono">
+        <div class="flex-1 flex flex-col border rounded-lg p-1 bg-gray-900 text-green-400 font-mono min-h-32 text-sm">
           <div class="flex gap-2 mb-2">
             <span>def</span>
             <input type="text" placeholder="function_name" class="flex-1 bg-gray-900 text-green-400 border-b border-green-400 focus:outline-none" [(ngModel)]="codeFunctionName"/>
@@ -42,7 +88,7 @@
 
           <!-- Function body textarea fills remaining space -->
           <textarea
-            class="flex-1 w-full resize-none mt-1 bg-gray-900 text-green-300 p-2 overflow-auto"
+            class="flex-1 w-full resize-none mt-1 bg-gray-900 text-green-300 p-2 overflow-auto text-sm"
             [(ngModel)]="codeBody"
             placeholder="# function body"
           ></textarea>
