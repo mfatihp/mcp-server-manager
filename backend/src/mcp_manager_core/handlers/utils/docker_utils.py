@@ -16,7 +16,7 @@ def create_dockerfile(base_image="python:3.12.11-bookworm",
         requirements=requirements,
         base_image=base_image,
         packages=packages,
-        expose_port=port,
+        expose_port=port, # TODO: Gerekliliği araştırılacak.
         project_files=project_files,
         tool_name=tool_name
     )

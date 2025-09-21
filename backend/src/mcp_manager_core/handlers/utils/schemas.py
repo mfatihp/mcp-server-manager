@@ -13,10 +13,10 @@ class MCPSchema(BaseModel):
 class MCPCreateSchema(BaseModel):
     server_name: str
     description: str
-    func: str
     servertype: str
     pkgs: List[str]
-
+    func_args: str
+    func_body: str
 
 
 class ControlParams(BaseModel):

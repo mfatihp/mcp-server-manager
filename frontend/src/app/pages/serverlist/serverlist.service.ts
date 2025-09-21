@@ -13,11 +13,18 @@ export class ServerlistService {
 
   private func = "";
 
-  mcp_schema!: {"server_name": string, "description": string, "func": string, "servertype": string; "pkgs": string[] };
+  mcp_schema!: {
+    "server_name": string, 
+    "description": string, 
+    "func_args": string, 
+    "func_body": string, 
+    "servertype": string; 
+    "pkgs": string[] 
+  };
 
   constructor(private http: HttpClient) { }
 
-  // TODO: Create empty list and schema for items
+  // TODO: Create empty list and schema for items !!!!IMPORTANT
   // servers!: { name: string, description: string, image: string}[];
   servers = [
     { name: 'Server 1', description: 'First server', image: '/resource.png' },
@@ -29,13 +36,18 @@ export class ServerlistService {
     return this.servers;
   }
 
-  pauseMCPServer(index: number, body: string) { 
+  pauseMCPServer(index: number) { 
     alert(`Paused: ${this.servers[index].name}`);
 
-    this.http.post(this.mcpControlUrl, {
-      serverId: "",
-      controlCommand: "pause"
-    });
+    // TODO: subscribe kısmındaki uyarıya bakılacak
+    this.http.post(this.mcpCreateUrl, {
+                                        serverId: "",
+                                        controlCommand: "pause"
+                                      }).subscribe(response => {
+                                                                console.log("Success:", response);},
+                                                                error => {
+                                                                  console.log("Error:", error);
+                                                              });
   }
   
   deleteMCPServer(index: number) { 
@@ -45,6 +57,15 @@ export class ServerlistService {
       serverId: "",
       controlCommand: "delete"
     });
+    // TODO: subscribe kısmındaki uyarıya bakılacak
+    this.http.post(this.mcpCreateUrl, {
+                                        serverId: "",
+                                        controlCommand: "delete"
+                                      }).subscribe(response => {
+                                                                console.log("Success:", response);},
+                                                                error => {
+                                                                  console.log("Error:", error);
+                                                              });
   }
   
   editMCPServer(index: number) { 
@@ -62,23 +83,28 @@ export class ServerlistService {
     });    
   }
 
-  addMCPServer(server: { name: string; description: string; serverType: string; image: string; pkgs: string[]}) {
-    console.log("Frontend")
-    // this.servers.push({ ...server });
-
+  addMCPServer(server: { name: string; 
+                         description: string; 
+                         serverType: string; 
+                         image: string; 
+                         pkgs: string[],
+                         func_args: string,
+                         func_body: string
+                        }) {
 
     this.mcp_schema = {"server_name": server.name, 
                         "description": server.description,
-                        "func": "Test", 
                         "servertype": server.serverType,
-                        "pkgs": server.pkgs
+                        "pkgs": server.pkgs,
+                        "func_args": server.func_args, 
+                        "func_body": server.func_body, 
                       }
 
-    // Request doğru çalışmıyor. 
+    // TODO: subscribe kısmındaki uyarıya bakılacak
     this.http.post(this.mcpCreateUrl, this.mcp_schema).subscribe(response => {
-      console.log("Success:", response);},
-      error => {
-        console.log("Error:", error);
-    });
+                                                                              console.log("Success:", response);},
+                                                                              error => {
+                                                                                console.log("Error:", error);
+                                                                            });
   }
 }

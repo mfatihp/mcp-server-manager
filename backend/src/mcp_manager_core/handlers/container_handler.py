@@ -1,6 +1,6 @@
 import docker
 from dotenv import dotenv_values
-from handlers.utils.pythonfile_utils import create_tool_file
+from handlers.utils.pythonfile_utils import create_tool_file, create_requirements_file
 from handlers.utils.docker_utils import create_dockerfile
 
 
@@ -11,7 +11,7 @@ class DockerHandler:
         self.docker_cli = docker.DockerClient(base_url=env_values["DOCKER_URL"])
     
 
-    def create(self, fname, ftype, fargs, fbody, tag, port):
+    def create(self, fname, ftype, fargs, fbody, fpkgs, tag, port):
         try:
             create_tool_file(function_name=fname,
                              function_type=ftype,
@@ -20,15 +20,18 @@ class DockerHandler:
             
             create_dockerfile(tool_name=fname,
                               port=port)
+            
+            create_requirements_file(pkgs=fpkgs)
 
-            # self.docker_cli.images.build(path="src/mcp_server_template/", tag=tag, rm=True)
+            self.docker_cli.images.build(path="src/mcp_server_template/", tag=tag, rm=True)
 
-            # container = self.docker_cli.containers.run(image=tag, name="", detach=True, ports=port)
+            container = self.docker_cli.containers.run(image=tag, name=f"mcp_{fname.lower()}", detach=True, ports=port)
 
             # TODO: Docker ile otomatik port ataması yapılacak.
-            # container.reload()
-            # container_port = container.attrs['NetworkSettings]['Ports']['80/tcp'][0]['HostPort']
-            # return "Container Info"
+            container.reload()
+            container_port = container.attrs['NetworkSettings']['Ports']['80/tcp'][0]['HostPort']
+            
+            return container_port
 
         except Exception as e:
             raise e

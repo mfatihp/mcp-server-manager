@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
 })
 
 export class ServerCreateComponent {
-  @Output() serverCreated = new EventEmitter<{ name: string; description: string; serverType: string; image: string; pkgs: string[]}>();
+  @Output() serverCreated = new EventEmitter<{ name: string; description: string; serverType: string; image: string; pkgs: string[]; func_body: string; func_args: string}>();
   @Output() close = new EventEmitter<void>();
 
   newServerName = '';
@@ -61,7 +61,9 @@ export class ServerCreateComponent {
       description: this.newServerDesc,
       serverType: this.servertype,
       image: this.images[this.servertype],
-      pkgs: this.selectedPackages
+      pkgs: this.selectedPackages,
+      func_body:this.codeBody,
+      func_args:this.codeArgs
     });
     this.newServerName = '';
     this.newServerDesc = '';

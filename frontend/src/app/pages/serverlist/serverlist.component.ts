@@ -25,18 +25,19 @@ export class ServerlistComponent implements OnInit {
 
   pauseServer(index: number) { 
     alert(`Paused: ${this.servers[index].name}`); 
-    this.service.pauseMCPServer(index, this.servers[index].name); // TODO: Create message body, replace name property
+    this.service.pauseMCPServer(index); // TODO: Create message body, replace name property
   }
   
   deleteServer(index: number) { 
     this.servers.splice(index, 1); 
+    this.service.deleteMCPServer(index); // TODO: Container işlemlerinin tamamlanması gerekiyor. arg olarak contID olacak.
   }
   
   editServer(index: number) { 
     alert(`Edit: ${this.servers[index].name}`); 
   }
 
-  addServer(server: { name: string; description: string; serverType: string; image: string; pkgs: string[]}) {
+  addServer(server: { name: string; description: string; serverType: string; image: string; pkgs: string[]; func_args: string; func_body: string}) {
     this.servers.push({ ...server });
     this.service.addMCPServer(server);
   }

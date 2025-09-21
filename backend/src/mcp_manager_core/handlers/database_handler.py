@@ -16,7 +16,12 @@ class DBHandlerPG:
         env_info = dotenv_values("src/mcp_manager_core/.env")
 
         pg_db_url = f"postgresql+psycopg2://{env_info["PG_USER"]}:{env_info["PG_PWD"]}@{env_info["PG_HOST"]}:{env_info["PG_PORT"]}/{env_info["PG_DB"]}"
-        self.db_engine = create_engine(pg_db_url) 
+        self.db_engine = create_engine(pg_db_url)
+    
+
+    def db_fetch_server_list(self):
+        # TODO: sqlalchemy ile db sorgusu oluşturulacak. "mcp_server_list" tablosunun bütün bilgileri alınacak. 
+        pass
     
 
     def db_read(self):

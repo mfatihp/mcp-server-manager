@@ -1,7 +1,8 @@
 from jinja2 import Environment, FileSystemLoader
+from typing import List
 import textwrap
 
-
+from handlers.data.pip_pkg_list import pkg_list
 
 
 def create_tool_file(function_name:str="ocaptai",
@@ -25,8 +26,18 @@ def create_tool_file(function_name:str="ocaptai",
         f.write(pythonfile_content)
     
 
-def create_requirements_file():
-    pass
+def create_requirements_file(pkgs: List):
+    env = Environment(loader=FileSystemLoader("../mcp_server_template/requirements_templates/"))
+    template = env.get_template("user_requirements.txt.j2")
+
+    required_cmds = [pkg_list[i] for i in pkgs]
+
+    requirements_content = template.render(
+        requirements=required_cmds
+    )
+
+    with open("../mcp_server_template/user_requirements.txt", "w") as f:
+        f.write(requirements_content)
     
 
 
