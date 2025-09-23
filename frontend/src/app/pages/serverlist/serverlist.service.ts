@@ -106,5 +106,11 @@ export class ServerlistService {
                                                                               error => {
                                                                                 console.log("Error:", error);
                                                                             });
+    /* TODO: Overlay Create basıldıktan hemen sonra item üzerinde belirecek. 
+             Response gelinceye kadar kalacak ve her overlay o item için özel 
+             olacak tüm listeyi kitlemeyecek. 
+
+             Bu fonksiyonun tetiklenmesi yeterli. 
+   */
   }
 }

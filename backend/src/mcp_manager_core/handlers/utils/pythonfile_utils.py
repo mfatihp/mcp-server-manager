@@ -16,8 +16,8 @@ def create_tool_file(function_name:str="ocaptai",
     pythonfile_content = template.render(
         name=function_name,
         o_type=function_type,
+        f_args=func_args,
         mcp_function = textwrap.dedent(f"""
-        def {function_name}({func_args}):
         {func_body}
         """)
     )

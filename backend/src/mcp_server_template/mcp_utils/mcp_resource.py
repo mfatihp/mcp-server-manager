@@ -1,4 +1,4 @@
-from backend.src.mcp_server_template.mcp_utils.mcp_base import MCP
+from mcp_utils.mcp_base import MCP
 
 
 
