@@ -30,18 +30,7 @@ docker_handler = DockerHandler()
 # TODO: Create MCP Server
 @core.post("/manager/create_mcp_server")
 async def create_mcp_server(mcp_schema:MCPCreateSchema):
-    redis_entry = {
-        "server_name": mcp_schema.server_name,
-        "description": mcp_schema.description,
-        "server_type": mcp_schema.servertype,
-        "pkgs":mcp_schema.pkgs,
-        "func_args": mcp_schema.func_args,
-        "func_body": mcp_schema.func_body,
-    }
-
     # TODO: Paket isimlerinin yükleme komutları için db table kurulacak veya otomatik olarak pypi'den çekilecek
-
-    print(redis_entry)
 
     container_info = docker_handler.create(fname=mcp_schema.server_name, 
                                            ftype=mcp_schema.servertype,
@@ -50,6 +39,17 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
                                            fbody=mcp_schema.func_body, 
                                            tag=f"{mcp_schema.server_name.lower()}:latest", 
                                            port=50001)
+    
+    redis_entry = {
+        "container_id": container_info,
+        "server_name": mcp_schema.server_name,
+        "description": mcp_schema.description,
+        "server_type": mcp_schema.servertype,
+        "pkgs": mcp_schema.pkgs,
+        "func_args": mcp_schema.func_args,
+        "func_body": mcp_schema.func_body,
+        "server_port": container_info
+    }
 
     # TODO: Register into the dbs.
     db_handler_rds.db_insert(contId=container_info, contInfo=redis_entry)
@@ -57,9 +57,6 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
     # TODO: Register description into the vector db.
 
     # TODO: Register into path table eg: "*://manager/path/{funtion_name}".
-
-
-
 
 
 
@@ -83,14 +80,8 @@ async def check_status():
 
 
 
-##########################################################################################################################
-
-
-
-
-
 # TODO: Control MCP Servers
-@core.post("manager/control_mcp_server")
+@core.post("/manager/control_mcp_server")
 async def control_mcp_server(control_params: MCPControlSchema):
     match control_params.controlCommand:
         case "pause":
@@ -101,7 +92,7 @@ async def control_mcp_server(control_params: MCPControlSchema):
             docker_handler.delete(contID=control_params.serverId)
             
             # TODO: Delete redis entry
-            db_handler_rds.db_delete(contId=control_params.serverId)
+            # db_handler_rds.db_delete(contId=control_params.serverId)
 
             # TODO: Delete postgresql entry
 
@@ -113,20 +104,6 @@ async def control_mcp_server(control_params: MCPControlSchema):
         case "edit":
             # TODO: Edit için docker fonksiyonu oluştur. [Opsiyonel]
             pass
-
-
-
-
-
-
-
-
-
-
-
-
-
-##########################################################################################################################
 
 
 

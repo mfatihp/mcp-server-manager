@@ -25,14 +25,12 @@ class DockerHandler:
 
         self.docker_cli.images.build(path="../mcp_server_template/", tag=tag, rm=True)
 
-        container = self.docker_cli.containers.run(image=tag, name=f"mcp_{fname.lower()}", detach=True,  ports={"50001/tcp": 50001})
+        container = self.docker_cli.containers.run(image=tag, name=f"mcp_{fname.lower()}", detach=True,  ports={f"{port}/tcp": port})
 
         # TODO: Docker ile otomatik port ataması yapılacak.
         container.reload()
-        # print(container.attrs)
 
-        container_port = container.attrs['NetworkSettings']['Ports']['50001/tcp'][0]['HostPort']
-        print(container_port)
+        container_port = container.attrs['NetworkSettings']['Ports'][f'{port}/tcp'][0]['HostPort']
         
         return container_port
 

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 
 
@@ -29,4 +29,4 @@ class ControlParams(BaseModel):
 class MCPControlSchema(BaseModel):
     serverId: str
     controlCommand: str
-    controlParams: List[ControlParams]
+    controlParams: Optional[Dict[str, ControlParams]]
