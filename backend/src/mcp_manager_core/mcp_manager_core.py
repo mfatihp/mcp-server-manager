@@ -32,13 +32,13 @@ docker_handler = DockerHandler()
 async def create_mcp_server(mcp_schema:MCPCreateSchema):
     # TODO: Paket isimlerinin yükleme komutları için db table kurulacak veya otomatik olarak pypi'den çekilecek
 
-    container_info = docker_handler.create(fname=mcp_schema.server_name, 
-                                           ftype=mcp_schema.servertype,
-                                           fpkgs=mcp_schema.pkgs,
-                                           fargs=mcp_schema.func_args, 
-                                           fbody=mcp_schema.func_body, 
-                                           tag=f"{mcp_schema.server_name.lower()}:latest", 
-                                           port=50001)
+    # container_info = docker_handler.create(fname=mcp_schema.server_name, 
+    #                                        ftype=mcp_schema.servertype,
+    #                                        fpkgs=mcp_schema.pkgs,
+    #                                        fargs=mcp_schema.func_args, 
+    #                                        fbody=mcp_schema.func_body, 
+    #                                        tag=f"{mcp_schema.server_name.lower()}:latest", 
+    #                                        port=50001)
     
 
     # TODO: Register into the dbs.
@@ -54,8 +54,8 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
 
     # Postgresql
     pg_entry = PGItem(
-        container_id= container_info,
-        server_port=container_info,
+        container_id= "container_info",
+        server_port="container_info",
         mcp_server_name= mcp_schema.server_name,
         mcp_server_description= mcp_schema.description,
         function_args= db_handler_pg.args_to_dict(mcp_schema.func_args),

@@ -57,6 +57,7 @@ class PGItemORM(Base):
     __tablename__ = "mcp_server_list"
     id = Column(Integer, primary_key=True)
     container_id = Column(String)
+    server_port = Column(String)
     mcp_server_name = Column(String)
     mcp_server_description = Column(String)
     function_args = Column(JSON)
