@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from dotenv import dotenv_values
 
 from typing import Dict, Any
-from handlers.utils.schemas import PGItem
+from handlers.utils.schemas import PGItem, PGItemORM
 
 import redis
 from redis.commands.json.path import Path
@@ -35,7 +35,7 @@ class DBHandlerPG:
     def db_insert(self, pg_entry: PGItem):
         with self.db_session_scope(self.db_engine) as session:
             session.execute(
-                insert(PGItem),
+                insert(PGItemORM),
                     [
                         {
                             "container_id": pg_entry.container_id, 
@@ -61,11 +61,14 @@ class DBHandlerPG:
         """
         # TODO: Docstring oluşturulacak
         """
-        args_list = args_string.replace(" ", "").split(",")
-        args_list = [i.strip() for i in args_list]
-        arg_dict = {arg.split(":")[0]: arg.split(":")[1] for arg in args_list}
-        
-        return arg_dict
+        if args_string == "":
+            return {}
+        else:
+            args_list = args_string.replace(" ", "").split(",")
+            args_list = [i.strip() for i in args_list]
+            arg_dict = {arg.split(":")[0]: arg.split(":")[1] for arg in args_list}
+            
+            return arg_dict
 
 
     @contextmanager

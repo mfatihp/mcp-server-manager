@@ -43,14 +43,14 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
 
     # TODO: Register into the dbs.
     # Redis
-    redis_entry = {
-        "container_id": container_info,
-        "server_name": mcp_schema.server_name,
-        "server_status": "active",
-        "server_port": container_info
-    }
+    # redis_entry = {
+    #     "container_id": container_info,
+    #     "server_name": mcp_schema.server_name,
+    #     "server_status": "active",
+    #     "server_port": container_info
+    # }
 
-    db_handler_rds.db_insert(contId=container_info, contInfo=redis_entry)
+    # db_handler_rds.db_insert(contId=container_info, contInfo=redis_entry)
 
     # Postgresql
     pg_entry = PGItem(
@@ -58,7 +58,7 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
         server_port=container_info,
         mcp_server_name= mcp_schema.server_name,
         mcp_server_description= mcp_schema.description,
-        function_args= mcp_schema.func_args,
+        function_args= db_handler_pg.args_to_dict(mcp_schema.func_args),
         function_body= mcp_schema.func_body
     )
 

@@ -1,7 +1,8 @@
 from pydantic import BaseModel
 from typing import List, Optional, Dict
-
-
+from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.orm import declarative_base
 
 
 class MCPSchema(BaseModel):
@@ -46,3 +47,17 @@ class RDSItem(BaseModel):
     server_name: str
     server_status: str
     server_port: str
+
+
+## ORM Models
+
+Base = declarative_base()
+
+class PGItemORM(Base):
+    __tablename__ = "mcp_server_list"
+    id = Column(Integer, primary_key=True)
+    container_id = Column(String)
+    mcp_server_name = Column(String)
+    mcp_server_description = Column(String)
+    function_args = Column(JSON)
+    function_body = Column(Text)
