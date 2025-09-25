@@ -11,9 +11,9 @@
       placeholder="Search..."
       class="w-64 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700
             bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
-            focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
+            focus:outline-none focus:ring-2 focus:ring-blue-500"/>
   </div>
+
   <!-- Server grid -->
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     <div *ngFor="let server of filteredServers; let i = index" class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 p-4 flex flex-col items-center hover:shadow-lg transition">
@@ -26,7 +26,7 @@
           Waiting for backend...
         </span>
       </div>
-      
+
       <!-- Control buttons top-right -->
       <div class="absolute top-2 right-2 flex gap-1">
         <!-- Pause -->

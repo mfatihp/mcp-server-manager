@@ -30,3 +30,19 @@ class MCPControlSchema(BaseModel):
     serverId: str
     controlCommand: str
     controlParams: Optional[Dict[str, ControlParams]]
+
+
+class PGItem(BaseModel):
+    container_id: str
+    server_port: str
+    mcp_server_name: str
+    mcp_server_description: str
+    function_args: Dict[str, str]
+    function_body: str
+
+
+class RDSItem(BaseModel):
+    container_id: str
+    server_name: str
+    server_status: str
+    server_port: str

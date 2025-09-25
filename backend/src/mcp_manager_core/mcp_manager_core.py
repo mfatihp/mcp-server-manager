@@ -1,6 +1,6 @@
 from handlers.database_handler import DBHandlerPG, DBHandlerRDS
 from handlers.container_handler import DockerHandler
-from handlers.utils.schemas import MCPSchema, MCPControlSchema, MCPCreateSchema
+from handlers.utils.schemas import MCPControlSchema, MCPCreateSchema, PGItem
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
@@ -17,7 +17,7 @@ core.add_middleware(
     allow_headers=["*"]
 )
 
-# db_handler_pg = DBHandlerPG()
+db_handler_pg = DBHandlerPG()
 db_handler_rds = DBHandlerRDS()
 docker_handler = DockerHandler()
 
@@ -40,19 +40,36 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
                                            tag=f"{mcp_schema.server_name.lower()}:latest", 
                                            port=50001)
     
+
+    # TODO: Register into the dbs.
+    # Redis
     redis_entry = {
         "container_id": container_info,
         "server_name": mcp_schema.server_name,
-        "description": mcp_schema.description,
-        "server_type": mcp_schema.servertype,
-        "pkgs": mcp_schema.pkgs,
-        "func_args": mcp_schema.func_args,
-        "func_body": mcp_schema.func_body,
+        "server_status": "active",
         "server_port": container_info
     }
 
-    # TODO: Register into the dbs.
     db_handler_rds.db_insert(contId=container_info, contInfo=redis_entry)
+
+    # Postgresql
+    pg_entry = PGItem(
+        container_id= container_info,
+        server_port=container_info,
+        mcp_server_name= mcp_schema.server_name,
+        mcp_server_description= mcp_schema.description,
+        function_args= mcp_schema.func_args,
+        function_body= mcp_schema.func_body
+    )
+
+    db_handler_pg.db_insert(pg_entry=pg_entry)
+
+
+
+
+
+
+
 
     # TODO: Register description into the vector db.
 

@@ -1,9 +1,10 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, insert, select
 from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
 from dotenv import dotenv_values
 
 from typing import Dict, Any
+from handlers.utils.schemas import PGItem
 
 import redis
 from redis.commands.json.path import Path
@@ -13,10 +14,13 @@ from redis.commands.json.path import Path
 
 class DBHandlerPG:
     def __init__(self):
-        env_info = dotenv_values("src/mcp_manager_core/.env")
+        env_info = dotenv_values(".env")
 
         pg_db_url = f"postgresql+psycopg2://{env_info["PG_USER"]}:{env_info["PG_PWD"]}@{env_info["PG_HOST"]}:{env_info["PG_PORT"]}/{env_info["PG_DB"]}"
         self.db_engine = create_engine(pg_db_url)
+
+        self.db_session = self.db_session_scope(engine=self.db_engine)
+
     
 
     def db_fetch_server_list(self):
@@ -28,8 +32,20 @@ class DBHandlerPG:
         pass
 
 
-    def db_insert(self):
-        pass
+    def db_insert(self, pg_entry: PGItem):
+        with self.db_session_scope(self.db_engine) as session:
+            session.execute(
+                insert(PGItem),
+                    [
+                        {
+                            "container_id": pg_entry.container_id, 
+                            "mcp_server_name": pg_entry.mcp_server_name,
+                            "mcp_server_description": pg_entry.mcp_server_description,
+                            "function_args": pg_entry.function_args,
+                            "function_body": pg_entry.function_body,
+                        }
+                    ])
+            
 
 
     def db_update(self):
@@ -38,6 +54,18 @@ class DBHandlerPG:
 
     def db_delete(self):
         pass
+    
+
+    @staticmethod
+    def args_to_dict(args_string: str):
+        """
+        # TODO: Docstring oluşturulacak
+        """
+        args_list = args_string.replace(" ", "").split(",")
+        args_list = [i.strip() for i in args_list]
+        arg_dict = {arg.split(":")[0]: arg.split(":")[1] for arg in args_list}
+        
+        return arg_dict
 
 
     @contextmanager
@@ -94,11 +122,7 @@ class DBHandlerRDS:
 
 
 if __name__ == "__main__":
-    test_db = DBHandlerRDS()
-    test_db.db_insert(contId="1", contInfo={"name":"tool_1", "description":"Some explanation"})
+    test_db = DBHandlerPG()
 
-    print(test_db.db_read(contId="contId:1"))
-
-    test_db.db_delete(contId="contId:1")
-
-    print(test_db.db_read(contId="contId:1"))
+    test_args = "a: int, b: str, c: list"
+    test_db.args_to_dict(args_string=test_args)
