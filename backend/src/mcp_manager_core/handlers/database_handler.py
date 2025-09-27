@@ -41,6 +41,7 @@ class DBHandlerPG:
                         {
                             "container_id": pg_entry.container_id, 
                             "mcp_server_name": pg_entry.mcp_server_name,
+                            "server_port": pg_entry.server_port,
                             "mcp_server_description": pg_entry.mcp_server_description,
                             "function_args": pg_entry.function_args,
                             "function_body": pg_entry.function_body,

@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import List, Optional, Dict
 from sqlalchemy import Column, Integer, String, Text
-from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import declarative_base
 
 
@@ -54,11 +54,11 @@ class RDSItem(BaseModel):
 Base = declarative_base()
 
 class PGItemORM(Base):
-    __tablename__ = "mcp_server_list"
+    __tablename__ = "mcp_servers"
     id = Column(Integer, primary_key=True)
     container_id = Column(String)
     server_port = Column(String)
     mcp_server_name = Column(String)
     mcp_server_description = Column(String)
-    function_args = Column(JSON)
+    function_args = Column(JSONB)
     function_body = Column(Text)
