@@ -31,8 +31,9 @@ class DockerHandler:
         container.reload()
 
         container_port = container.attrs['NetworkSettings']['Ports'][f'{port}/tcp'][0]['HostPort']
+        container_id = container.id
         
-        return container_port
+        return container_id, container_port
 
         # except Exception as e:
         #     raise e

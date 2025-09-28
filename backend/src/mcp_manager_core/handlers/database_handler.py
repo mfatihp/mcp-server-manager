@@ -95,9 +95,9 @@ class DBHandlerPG:
 class DBHandlerRDS:
     """Redis database handler"""
     def __init__(self):
-        # env_info = dotenv_values("src/mcp_manager_core/.env")
-        # self.redis_db_conn = redis.Redis(host=env_info["RDS_HOST"], port=env_info["RDS_PORT"], decode_responses=True)
-        self.redis_db_conn = redis.Redis(host="localhost", port=6379, decode_responses=True)
+        env_info = dotenv_values(".env")
+        self.redis_db_conn = redis.Redis(host="localhost", port=env_info["RDS_PORT"], decode_responses=True)
+        # self.redis_db_conn = redis.Redis(host="localhost", port=6379, decode_responses=True)
 
 
     def db_read(self, contId: str):

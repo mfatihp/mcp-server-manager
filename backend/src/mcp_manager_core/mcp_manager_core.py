@@ -32,30 +32,30 @@ docker_handler = DockerHandler()
 async def create_mcp_server(mcp_schema:MCPCreateSchema):
     # TODO: Paket isimlerinin yükleme komutları için db table kurulacak veya otomatik olarak pypi'den çekilecek
 
-    # container_info = docker_handler.create(fname=mcp_schema.server_name, 
-    #                                        ftype=mcp_schema.servertype,
-    #                                        fpkgs=mcp_schema.pkgs,
-    #                                        fargs=mcp_schema.func_args, 
-    #                                        fbody=mcp_schema.func_body, 
-    #                                        tag=f"{mcp_schema.server_name.lower()}:latest", 
-    #                                        port=50001)
-    
+    container_id, container_port = docker_handler.create(fname=mcp_schema.server_name, 
+                                                         ftype=mcp_schema.servertype,
+                                                         fpkgs=mcp_schema.pkgs,
+                                                         fargs=mcp_schema.func_args, 
+                                                         fbody=mcp_schema.func_body, 
+                                                         tag=f"{mcp_schema.server_name.lower()}:latest", 
+                                                         port=50001) # TODO: Auto port numaralandırması yapılacak. Port havuzu oluştur ve oradan takip et
 
-    # TODO: Register into the dbs.
+
+    ## Register into the dbs.
     # Redis
-    redis_entry = {
-        "container_id": "container_info",
-        "server_name": mcp_schema.server_name,
-        "server_status": "active",
-        "server_port": "container_info"
-    }
+    # redis_entry = {
+    #     "container_id": container_id,
+    #     "server_name": mcp_schema.server_name,
+    #     "server_status": "active",
+    #     "server_port": container_port
+    # }
 
-    db_handler_rds.db_insert(contId="container_info", contInfo=redis_entry)
+    # db_handler_rds.db_insert(contId=container_id, contInfo=redis_entry)
 
     # Postgresql
     # pg_entry = PGItem(
-    #     container_id= "container_info",
-    #     server_port= "container_info",
+    #     container_id= container_id,
+    #     server_port= container_port,
     #     mcp_server_name= mcp_schema.server_name,
     #     mcp_server_description= mcp_schema.description,
     #     function_args= db_handler_pg.args_to_dict(mcp_schema.func_args),
