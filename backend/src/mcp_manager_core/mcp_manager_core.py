@@ -37,32 +37,30 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
                                                          fpkgs=mcp_schema.pkgs,
                                                          fargs=mcp_schema.func_args, 
                                                          fbody=mcp_schema.func_body, 
-                                                         tag=f"{mcp_schema.server_name.lower()}:latest", 
-                                                         port=50001) # TODO: Auto port numaralandırması yapılacak. Port havuzu oluştur ve oradan takip et
-
+                                                         tag=f"{mcp_schema.server_name.lower()}:latest")
 
     ## Register into the dbs.
     # Redis
-    # redis_entry = {
-    #     "container_id": container_id,
-    #     "server_name": mcp_schema.server_name,
-    #     "server_status": "active",
-    #     "server_port": container_port
-    # }
+    redis_entry = {
+        "container_id": container_id,
+        "server_name": mcp_schema.server_name,
+        "server_status": "active",
+        "server_port": container_port
+    }
 
-    # db_handler_rds.db_insert(contId=container_id, contInfo=redis_entry)
+    db_handler_rds.db_insert(contId=container_id, contInfo=redis_entry)
 
     # Postgresql
-    # pg_entry = PGItem(
-    #     container_id= container_id,
-    #     server_port= container_port,
-    #     mcp_server_name= mcp_schema.server_name,
-    #     mcp_server_description= mcp_schema.description,
-    #     function_args= db_handler_pg.args_to_dict(mcp_schema.func_args),
-    #     function_body= mcp_schema.func_body
-    # )
+    pg_entry = PGItem(
+        container_id= container_id,
+        server_port= container_port,
+        mcp_server_name= mcp_schema.server_name,
+        mcp_server_description= mcp_schema.description,
+        function_args= db_handler_pg.args_to_dict(mcp_schema.func_args),
+        function_body= mcp_schema.func_body
+    )
 
-    # db_handler_pg.db_insert(pg_entry=pg_entry)
+    db_handler_pg.db_insert(pg_entry=pg_entry)
 
 
 
@@ -100,29 +98,31 @@ async def check_status():
 # TODO: Control MCP Servers
 @core.post("/manager/control_mcp_server")
 async def control_mcp_server(control_params: MCPControlSchema):
-    match control_params.controlCommand:
-        case "pause":
-            docker_handler.pause(contID=control_params.serverId)
-            # TODO: Update redis status
+    try:
+        match control_params.controlCommand:
+            case "pause":
+                docker_handler.pause(contID=control_params.serverId)
+                
+                # Update redis status
+                db_handler_rds.db_update(contId=control_params.serverId, status_entry="paused")
 
-        case "delete":
-            docker_handler.delete(contID=control_params.serverId)
-            
-            # TODO: Delete redis entry
-            # db_handler_rds.db_delete(contId=control_params.serverId)
+            case "delete":
+                docker_handler.delete(contID=control_params.serverId)
+                
+                # Delete redis entry
+                db_handler_rds.db_delete(contId=control_params.serverId)
 
-            # TODO: Delete postgresql entry
-
-            # TODO: Return signal for delete process
-
-        case "restart":
-            docker_handler.restart(contID=control_params.serverId)
-
-        case "edit":
-            # TODO: Edit için docker fonksiyonu oluştur. [Opsiyonel]
-            pass
+                # TODO: Delete postgresql entry
 
 
+                # TODO: Return signal for delete process
+
+            case "restart":
+                docker_handler.restart(contID=control_params.serverId)
+
+                db_handler_rds.db_update(contId=control_params.serverId, status_entry="active")
+    except Exception as e:
+        raise e
 
 
 

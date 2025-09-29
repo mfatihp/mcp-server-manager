@@ -111,17 +111,15 @@ class DBHandlerRDS:
         self.redis_db_conn.json().set(f"contId:{contId}", "$", contInfo)
 
 
-    def db_update(self, contId: str):
+    def db_update(self, contId: str, status_entry: str):
         """Update mcp status in redis"""
         # TODO: Edit (Modify veya Update) yöntemi çalışılacak.
-        # self.redis_db_conn.json().set(f"contId:{contId}", )
-        pass
+        self.redis_db_conn.json().set(f"contId:{contId}", "$.status", status_entry)
 
 
     def db_delete(self, contId: str):
         """Delete mcp server data from redis"""
         self.redis_db_conn.delete(contId)
-        
 
 
 

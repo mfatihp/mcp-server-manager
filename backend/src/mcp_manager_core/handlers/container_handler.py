@@ -11,32 +11,31 @@ class DockerHandler:
         self.docker_cli = docker.DockerClient(base_url=env_values["DOCKER_URL"])
     
 
-    def create(self, fname, ftype, fargs, fbody, fpkgs, tag, port):
-        # try:
-        create_tool_file(function_name=fname,
+    def create(self, fname, ftype, fargs, fbody, fpkgs, tag, port=50001):
+        try:
+            create_tool_file(function_name=fname,
                             function_type=ftype,
                             func_args=fargs,
                             func_body=fbody)
-        
-        create_dockerfile(tool_name=fname,
+            
+            create_dockerfile(tool_name=fname,
                             port=port)
-        
-        create_requirements_file(pkgs=fpkgs)
+            
+            create_requirements_file(pkgs=fpkgs)
 
-        self.docker_cli.images.build(path="../mcp_server_template/", tag=tag, rm=True)
+            self.docker_cli.images.build(path="../mcp_server_template/", tag=tag, rm=True)
 
-        container = self.docker_cli.containers.run(image=tag, name=f"mcp_{fname.lower()}", detach=True,  ports={f"{port}/tcp": port})
+            container = self.docker_cli.containers.run(image=tag, name=f"mcp_{fname.lower()}", detach=True,  ports={f"{port}/tcp": None})
 
-        # TODO: Docker ile otomatik port ataması yapılacak.
-        container.reload()
+            container.reload()
 
-        container_port = container.attrs['NetworkSettings']['Ports'][f'{port}/tcp'][0]['HostPort']
-        container_id = container.id
-        
-        return container_id, container_port
+            container_port = container.attrs['NetworkSettings']['Ports'][f'{port}/tcp'][0]['HostPort']
+            container_id = container.id
+            
+            return container_id, container_port
 
-        # except Exception as e:
-        #     raise e
+        except Exception as e:
+            raise e
 
 
 
