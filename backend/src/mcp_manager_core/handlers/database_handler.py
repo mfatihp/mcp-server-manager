@@ -103,6 +103,17 @@ class DBHandlerRDS:
     def db_read(self, contId: str):
         """Status check function for redis."""
         return self.redis_db_conn.json().get(contId)
+    
+
+    def db_read_all_status(self):
+        """Status check function for redis."""
+        stat_list = []
+
+        for key in self.redis_db_conn.scan_iter("contID:*"):
+            value = self.redis_db_conn.json().get(key)
+            stat_list.append(value)
+
+        return stat_list
 
 
     def db_insert(self, contId: str, contInfo: Dict[str, Any]):

@@ -27,10 +27,9 @@ docker_handler = DockerHandler()
 
 
 
-# TODO: Create MCP Server
+# Create MCP Server
 @core.post("/manager/create_mcp_server")
 async def create_mcp_server(mcp_schema:MCPCreateSchema):
-    # TODO: Paket isimlerinin yükleme komutları için db table kurulacak veya otomatik olarak pypi'den çekilecek
 
     container_id, container_port = docker_handler.create(fname=mcp_schema.server_name, 
                                                          ftype=mcp_schema.servertype,
@@ -64,11 +63,6 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
 
 
 
-
-
-
-
-
     # TODO: Register description into the vector db.
 
     # TODO: Register into path table eg: "*://manager/path/{funtion_name}".
@@ -85,13 +79,13 @@ async def check_list():
 
 
 
-
-# TODO: Check MCP status
+# Check MCP status
 @core.get("/manager/check_status")
 async def check_status():    
-    # TODO: Check status of mcp servers
-    # TODO: Status kontrolü redis db'den yapılacak
-    pass
+    # Check status of mcp servers
+    stat_list = db_handler_rds.db_read_all_status()
+
+    return {"status": stat_list}
 
 
 
@@ -113,9 +107,8 @@ async def control_mcp_server(control_params: MCPControlSchema):
                 db_handler_rds.db_delete(contId=control_params.serverId)
 
                 # TODO: Delete postgresql entry
-
-
                 # TODO: Return signal for delete process
+
 
             case "restart":
                 docker_handler.restart(contID=control_params.serverId)
