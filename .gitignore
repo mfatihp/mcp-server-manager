@@ -209,7 +209,7 @@ __marimo__/
 
 # Custom
 TODO
-docs/
+docs/*.drawio
 test/
 redis.conf
 chart.png
