@@ -3,7 +3,7 @@ from handlers.container_handler import DockerHandler
 from handlers.utils.schemas import MCPControlSchema, MCPCreateSchema, PGItem
 
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 import uvicorn
 
 
@@ -28,9 +28,11 @@ docker_handler = DockerHandler()
 
 
 # Create MCP Server
-@core.post("/manager/create_mcp_server")
+@core.post("/manager/create_mcp_server", status_code=status.HTTP_200_OK)
 async def create_mcp_server(mcp_schema:MCPCreateSchema):
+    """create_mcp_server"""
 
+    # Create docker container
     container_id, container_port = docker_handler.create(fname=mcp_schema.server_name, 
                                                          ftype=mcp_schema.servertype,
                                                          fpkgs=mcp_schema.pkgs,
@@ -38,8 +40,7 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
                                                          fbody=mcp_schema.func_body, 
                                                          tag=f"{mcp_schema.server_name.lower()}:latest")
 
-    ## Register into the dbs.
-    # Redis
+    # Create redis entry 
     redis_entry = {
         "container_id": container_id,
         "server_name": mcp_schema.server_name,
@@ -49,7 +50,7 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
 
     db_handler_rds.db_insert(contId=container_id, contInfo=redis_entry)
 
-    # Postgresql
+    # Create postgresql entry
     pg_entry = PGItem(
         container_id= container_id,
         server_port= container_port,
@@ -72,6 +73,7 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
 # TODO: Check MCP list
 @core.get("/manager/check_list")
 async def check_list():
+    """check_list"""
     # TODO: Check list of all mcp servers
     # TODO: Liste kontrolü SQL db'den yapılacak
     pass
@@ -81,7 +83,8 @@ async def check_list():
 
 # Check MCP status
 @core.get("/manager/check_status")
-async def check_status():    
+async def check_status():
+    """check_status"""
     # Check status of mcp servers
     stat_list = db_handler_rds.db_read_all_status()
 
@@ -89,8 +92,8 @@ async def check_status():
 
 
 
-# TODO: Control MCP Servers
-@core.post("/manager/control_mcp_server")
+# Control MCP Servers
+@core.post("/manager/control_mcp_server", status_code=status.HTTP_200_OK)
 async def control_mcp_server(control_params: MCPControlSchema):
     try:
         match control_params.controlCommand:
@@ -106,14 +109,17 @@ async def control_mcp_server(control_params: MCPControlSchema):
                 # Delete redis entry
                 db_handler_rds.db_delete(contId=control_params.serverId)
 
-                # TODO: Delete postgresql entry
-                # TODO: Return signal for delete process
+                # Delete postgresql entry
+                db_handler_pg.db_delete(contID=control_params.serverId)
 
 
             case "restart":
+                # Container restart
                 docker_handler.restart(contID=control_params.serverId)
 
+                # Redis status update
                 db_handler_rds.db_update(contId=control_params.serverId, status_entry="active")
+
     except Exception as e:
         raise e
 

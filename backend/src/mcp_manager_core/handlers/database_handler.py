@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, insert, select
+from sqlalchemy import create_engine, insert, delete, select
 from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
 from dotenv import dotenv_values
@@ -54,8 +54,11 @@ class DBHandlerPG:
         pass
 
 
-    def db_delete(self):
-        pass
+    def db_delete(self, contID: str):
+        with self.db_session_scope(self.db_engine) as session:
+            session.execute(
+                delete(PGItemORM).where(PGItemORM.container_id == contID)
+            )
     
 
     @staticmethod
