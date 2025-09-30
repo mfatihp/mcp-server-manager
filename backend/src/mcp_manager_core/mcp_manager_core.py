@@ -22,9 +22,6 @@ db_handler_rds = DBHandlerRDS()
 docker_handler = DockerHandler()
 
 
-# TODO: Redis için bütün mcp server listesi init scripti ile sql db'den alınacak
-
-
 
 
 # Create MCP Server
@@ -66,7 +63,7 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
 
     # TODO: Register description into the vector db.
 
-    # TODO: Register into path table eg: "*://manager/path/{funtion_name}".
+    # TODO: Register into path table eg: "*://manager/path/{funtion_name}". (Maybe)
 
 
 
@@ -75,7 +72,6 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
 async def check_list():
     """check_list"""
     # TODO: Check list of all mcp servers
-    # TODO: Liste kontrolü SQL db'den yapılacak
     pass
 
 
