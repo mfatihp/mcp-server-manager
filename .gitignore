@@ -216,3 +216,38 @@ chart.png
 backend/src/mcp_server_template/Dockerfile
 backend/src/mcp_server_template/mcp.py
 backend/src/mcp_server_template/user_requirements.txt
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binaries
+*.test
+
+# Output of `go build`
+*.out
+
+# Go coverage files
+*.cover
+*.cov
+coverage.*
+
+# Logs
+*.log
+
+# Dependency directories (vendor if you use vendoring)
+vendor/
+
+# IDE/editor configs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+bin/
+dist/
