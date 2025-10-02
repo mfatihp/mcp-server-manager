@@ -40,7 +40,7 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
     # Create redis entry 
     redis_entry = {
         "container_id": container_id,
-        "server_name": mcp_schema.server_name,
+        "mcp_server_name": mcp_schema.server_name,
         "server_status": "active",
         "server_port": container_port
     }
