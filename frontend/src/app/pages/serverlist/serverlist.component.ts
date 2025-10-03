@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ServerCreateComponent } from './components/servercreate/servercreate.component';
 import { ServerlistService } from './serverlist.service';
+import { ServerItem } from './models/server-item.model';
 
 @Component({
   selector: 'app-serverlist',
@@ -14,7 +15,8 @@ import { ServerlistService } from './serverlist.service';
 export class ServerlistComponent implements OnInit {
   constructor(private service: ServerlistService) {}
 
-  servers!: { name: string, description: string, image: string; pending: boolean}[];
+  //servers!: { name: string, description: string, image: string; pending: boolean; IsRunning: boolean}[];
+  servers: ServerItem[] = [];
 
   ngOnInit(): void {
     this.servers = this.service.getServers();
@@ -23,9 +25,21 @@ export class ServerlistComponent implements OnInit {
 
   showCreateModal = false;
 
-  pauseServer(index: number) { 
-    alert(`Paused: ${this.servers[index].name}`); 
-    this.service.pauseMCPServer(index); // TODO: Create message body, replace name property
+  pauseServer(server: { name: string; 
+                      description: string; 
+                      serverType: string; 
+                      image: string; 
+                      pkgs: string[]; 
+                      func_args: string; 
+                      func_body: string;
+                      pending: boolean;
+                      IsRunning: boolean;
+                    }) {
+    if (server.IsRunning == false) {
+      this.service.pauseMCPServer(server);
+    } else {
+      this.service.runMCPServer(server);
+    }
   }
   
   deleteServer(index: number) { 
@@ -45,6 +59,7 @@ export class ServerlistComponent implements OnInit {
                       func_args: string; 
                       func_body: string;
                       pending: boolean;
+                      IsRunning: boolean;
                     }) {
     this.servers.push({ ...server });
     this.service.addMCPServer(server);

@@ -17,7 +17,8 @@ export class ServerCreateComponent {
                                                pkgs: string[]; 
                                                func_body: string; 
                                                func_args: string; 
-                                               pending: boolean }>();
+                                               pending: boolean;
+                                               IsRunning: boolean }>();
   @Output() close = new EventEmitter<void>();
 
   newServerName = '';
@@ -28,6 +29,7 @@ export class ServerCreateComponent {
   codeBody = '';
   servertype = '';
   serverpending = true;
+  serverrunning = true;
   images: Record<string, string> = {
     tool: '/tool.png',
     resource: '/resource.png'
@@ -73,6 +75,7 @@ export class ServerCreateComponent {
       func_body:this.codeBody,
       func_args:this.codeArgs,
       pending:this.serverpending,
+      IsRunning:this.serverrunning,
     });
     this.newServerName = '';
     this.newServerDesc = '';

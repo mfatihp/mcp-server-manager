@@ -32,9 +32,17 @@ export class ServerlistService {
     return this.servers;
   }
 
-  pauseMCPServer(index: number) { 
+  runMCPServer(server: { name: string; 
+                         description: string; 
+                         serverType: string; 
+                         image: string; 
+                         pkgs: string[],
+                         func_args: string,
+                         func_body: string,
+                         pending: boolean,
+                         IsRunning: boolean,
+                        }) { 
     // TODO: Pause & Play, pause tuşu bir kere basıldığında pause butonu değişecek ve play butonu olacak. Ona göre de işlev eklenecek
-    alert(`Paused: ${this.servers[index].name}`);
 
     this.http.post(this.mcpControlUrl, {
                                         serverId: "",
@@ -42,6 +50,33 @@ export class ServerlistService {
                                       }).subscribe({
                                                 next: (response) => {
                                                   console.log("Success:", response);
+                                                  server.IsRunning = true;
+                                                },
+                                                error: (error) => {
+                                                  console.log("Error:", error);
+                                                }
+                                              });
+  }
+
+  pauseMCPServer(server: { name: string; 
+                         description: string; 
+                         serverType: string; 
+                         image: string; 
+                         pkgs: string[],
+                         func_args: string,
+                         func_body: string,
+                         pending: boolean,
+                         IsRunning: boolean,
+                        }) { 
+    // TODO: Pause & Play, pause tuşu bir kere basıldığında pause butonu değişecek ve play butonu olacak. Ona göre de işlev eklenecek
+
+    this.http.post(this.mcpControlUrl, {
+                                        serverId: "",
+                                        controlCommand: "pause"
+                                      }).subscribe({
+                                                next: (response) => {
+                                                  console.log("Success:", response);
+                                                  server.IsRunning = false;
                                                 },
                                                 error: (error) => {
                                                   console.log("Error:", error);
