@@ -45,7 +45,7 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
         "server_port": container_port
     }
 
-    db_handler_rds.db_insert(contId=container_id, contInfo=redis_entry)
+    db_handler_rds.db_insert(contID=container_id, contInfo=redis_entry)
 
     # Create postgresql entry
     pg_entry = PGItem(
@@ -97,13 +97,13 @@ async def control_mcp_server(control_params: MCPControlSchema):
                 docker_handler.pause(contID=control_params.serverId)
                 
                 # Update redis status
-                db_handler_rds.db_update(contId=control_params.serverId, status_entry="paused")
+                db_handler_rds.db_update(contID=control_params.serverId, status_entry="paused")
 
             case "delete":
                 docker_handler.delete(contID=control_params.serverId)
                 
                 # Delete redis entry
-                db_handler_rds.db_delete(contId=control_params.serverId)
+                db_handler_rds.db_delete(contID=control_params.serverId)
 
                 # Delete postgresql entry
                 db_handler_pg.db_delete(contID=control_params.serverId)
@@ -114,7 +114,7 @@ async def control_mcp_server(control_params: MCPControlSchema):
                 docker_handler.restart(contID=control_params.serverId)
 
                 # Redis status update
-                db_handler_rds.db_update(contId=control_params.serverId, status_entry="active")
+                db_handler_rds.db_update(contID=control_params.serverId, status_entry="active")
 
     except Exception as e:
         raise e

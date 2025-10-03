@@ -94,19 +94,18 @@ class DBHandlerPG:
 
 
 ##################################### REDIS #####################################
-# TODO: Key alanı için kullanılan "contID:" her yere uygulanacak. "contId:" gibi varyasyonlar silinecek.
+# TODO: Key alanı için kullanılan "contID:" her yere uygulanacak. "contID:" gibi varyasyonlar silinecek.
 
 class DBHandlerRDS:
     """Redis database handler"""
     def __init__(self):
         env_info = dotenv_values(".env")
         self.redis_db_conn = redis.Redis(host="localhost", port=env_info["RDS_PORT"], decode_responses=True)
-        # self.redis_db_conn = redis.Redis(host="localhost", port=6379, decode_responses=True)
 
 
-    def db_read(self, contId: str):
+    def db_read(self, contID: str):
         """Status check function for redis."""
-        return self.redis_db_conn.json().get(contId)
+        return self.redis_db_conn.json().get(contID)
     
 
     def db_read_all_status(self):
@@ -120,21 +119,21 @@ class DBHandlerRDS:
         return stat_list
 
 
-    def db_insert(self, contId: str, contInfo: Dict[str, Any]):
+    def db_insert(self, contID: str, contInfo: Dict[str, Any]):
         """Insert new mcp server names and statuses into redis."""
         # Redis key -> "<type>:<id>"
-        self.redis_db_conn.json().set(f"contId:{contId}", "$", contInfo)
+        self.redis_db_conn.json().set(f"contID:{contID}", "$", contInfo)
 
 
-    def db_update(self, contId: str, status_entry: str):
+    def db_update(self, contID: str, status_entry: str):
         """Update mcp status in redis"""
         # TODO: Edit (Modify veya Update) yöntemi çalışılacak.
-        self.redis_db_conn.json().set(f"contId:{contId}", "$.status", status_entry)
+        self.redis_db_conn.json().set(f"contID:{contID}", "$.status", status_entry)
 
 
-    def db_delete(self, contId: str):
+    def db_delete(self, contID: str):
         """Delete mcp server data from redis"""
-        self.redis_db_conn.delete(contId)
+        self.redis_db_conn.delete(contID)
 
 
 

@@ -61,7 +61,7 @@ func main() {
 }
 
 func syncUsers(pg *pgxpool.Pool, rdb *redis.Client, ctx context.Context) error {
-	// Fetch from Postgres
+	// Fetch from Postgres DB
 	rows, err := pg.Query(ctx, "SELECT container_id, mcp_server_name, server_port FROM mcp_servers")
 	if err != nil {
 		return err
@@ -77,8 +77,7 @@ func syncUsers(pg *pgxpool.Pool, rdb *redis.Client, ctx context.Context) error {
 		pgUsers[server.container_id] = server
 	}
 
-	// -----------------------------------------------------------------------------
-	// Fetch from Redis
+	// Fetch from Redis DB
 	var cursor uint64
 	redisKeys, _, err := rdb.Scan(ctx, cursor, "contId:*", 10).Result()
 
@@ -106,33 +105,30 @@ func syncUsers(pg *pgxpool.Pool, rdb *redis.Client, ctx context.Context) error {
 		}
 	}
 
-	// -----------------------------------------------------------------------------
-	// TODO: HSet yerine .Set veya .Do getirilecek
-
 	// Compare + Sync
 	for id, pgUser := range pgUsers {
-		redisUser, exists := redisUsers[id]
+		_, exists := redisUsers[id]
 		key := fmt.Sprintf("contID:%s", id)
 
 		if !exists {
 			// Insert missing server information
-			rdb.HSet(ctx, key,
-				"container_id", pgUser.container_id,
-				"mcp_server_name", pgUser.mcp_server_name,
-				"server_status", "active",
-				"server_port", pgUser.server_port,
-			)
+			new_val := RDSItem{
+				Container_id:    pgUser.container_id,
+				Mcp_server_name: pgUser.mcp_server_name,
+				Server_status:   "active",
+				Server_port:     pgUser.server_port,
+			}
+
+			jsondata, _ := json.Marshal(new_val)
+
+			res, err := rdb.Do(ctx, "JSON.SET", key, "$", jsondata).Result()
+
+			if err != nil || res != nil {
+				log.Fatal(err)
+			}
 
 			fmt.Println("Added:", pgUser)
 
-		} else if pgUser.mcp_server_name != redisUser.mcp_server_name {
-			// Update if name different
-			rdb.HSet(ctx, key, "mcp_server_name", pgUser.mcp_server_name)
-			fmt.Println("Updated (MCP Server Name):", pgUser)
-		} else if pgUser.server_port != redisUser.server_port {
-			// Update if port different
-			rdb.HSet(ctx, key, "server_port", pgUser.server_port)
-			fmt.Println("Updated (Server Port):", pgUser)
 		}
 	}
 
@@ -140,7 +136,11 @@ func syncUsers(pg *pgxpool.Pool, rdb *redis.Client, ctx context.Context) error {
 	for id := range redisUsers {
 		if _, exists := pgUsers[id]; !exists {
 			key := fmt.Sprintf("contID:%s", id)
-			rdb.Del(ctx, key)
+			_, err := rdb.Do(ctx, "JSON.DEL", key, ".").Result()
+
+			if err != nil {
+				log.Fatalf("Failed to delete JSON: %v", err)
+			}
 			fmt.Println("Deleted contID:", id)
 		}
 	}
