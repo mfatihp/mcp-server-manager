@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ServerItem } from './models/server-item.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -11,7 +12,7 @@ export class ServerlistService {
   private mcpControlUrl = 'http://localhost:8000/manager/control_mcp_server';
   private mcpCheckListUrl = 'http://localhost:8000/manager/check_list';
 
-  private func = "";
+  // private func = "";
 
   mcp_schema!: {
     "server_name": string, 
@@ -24,12 +25,7 @@ export class ServerlistService {
 
   constructor(private http: HttpClient) { }
 
-  // TODO: Create empty list and schema for items !!!!IMPORTANT
-  // servers!: { name: string, description: string, image: string}[];
-  servers = [
-    { name: 'Server 1', description: 'First server', image: '/resource.png' },
-    { name: 'Server 2', description: 'Second server', image: '/tool.png' }
-  ];
+  servers: ServerItem[] = [];
 
   getServers() {
     this.http.get(this.mcpCheckListUrl, {});
@@ -37,35 +33,36 @@ export class ServerlistService {
   }
 
   pauseMCPServer(index: number) { 
+    // TODO: Pause & Play, pause tuşu bir kere basıldığında pause butonu değişecek ve play butonu olacak. Ona göre de işlev eklenecek
     alert(`Paused: ${this.servers[index].name}`);
 
-    // TODO: subscribe kısmındaki uyarıya bakılacak
-    this.http.post(this.mcpCreateUrl, {
+    this.http.post(this.mcpControlUrl, {
                                         serverId: "",
                                         controlCommand: "pause"
-                                      }).subscribe(response => {
-                                                                console.log("Success:", response);},
-                                                                error => {
-                                                                  console.log("Error:", error);
-                                                              });
+                                      }).subscribe({
+                                                next: (response) => {
+                                                  console.log("Success:", response);
+                                                },
+                                                error: (error) => {
+                                                  console.log("Error:", error);
+                                                }
+                                              });
   }
   
   deleteMCPServer(index: number) { 
     this.servers.splice(index, 1); 
 
     this.http.post(this.mcpControlUrl, {
-      serverId: "",
-      controlCommand: "delete"
-    });
-    // TODO: subscribe kısmındaki uyarıya bakılacak
-    this.http.post(this.mcpCreateUrl, {
                                         serverId: "",
                                         controlCommand: "delete"
-                                      }).subscribe(response => {
-                                                                console.log("Success:", response);},
-                                                                error => {
-                                                                  console.log("Error:", error);
-                                                              });
+                                      }).subscribe({
+                                                  next: (response) => {
+                                                    console.log("Success:", response);
+                                                  },
+                                                  error: (error) => {
+                                                    console.log("Error:", error);
+                                                  }
+                                                });
   }
   
   editMCPServer(index: number) { 
@@ -89,7 +86,8 @@ export class ServerlistService {
                          image: string; 
                          pkgs: string[],
                          func_args: string,
-                         func_body: string
+                         func_body: string,
+                         pending: boolean
                         }) {
 
     this.mcp_schema = {"server_name": server.name, 
@@ -100,17 +98,15 @@ export class ServerlistService {
                         "func_body": server.func_body, 
                       }
 
-    // TODO: subscribe kısmındaki uyarıya bakılacak
-    this.http.post(this.mcpCreateUrl, this.mcp_schema).subscribe(response => {
-                                                                              console.log("Success:", response);},
-                                                                              error => {
-                                                                                console.log("Error:", error);
-                                                                            });
-    /* TODO: Overlay Create basıldıktan hemen sonra item üzerinde belirecek. 
-             Response gelinceye kadar kalacak ve her overlay o item için özel 
-             olacak tüm listeyi kitlemeyecek. 
-
-             Bu fonksiyonun tetiklenmesi yeterli. 
-   */
+    this.http.post(this.mcpCreateUrl, this.mcp_schema).subscribe({
+                                                            next: (response) => {
+                                                              console.log("Success:", response);
+                                                              server.pending = false;
+                                                            },
+                                                            error: (error) => {
+                                                              console.log("Error:", error);
+                                                              server.pending = false;
+                                                            }
+                                                          });
   }
 }

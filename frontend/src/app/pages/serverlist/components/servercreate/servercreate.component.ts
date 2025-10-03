@@ -10,7 +10,14 @@ import { FormsModule } from '@angular/forms';
 })
 
 export class ServerCreateComponent {
-  @Output() serverCreated = new EventEmitter<{ name: string; description: string; serverType: string; image: string; pkgs: string[]; func_body: string; func_args: string}>();
+  @Output() serverCreated = new EventEmitter<{ name: string; 
+                                               description: string; 
+                                               serverType: string; 
+                                               image: string; 
+                                               pkgs: string[]; 
+                                               func_body: string; 
+                                               func_args: string; 
+                                               pending: boolean }>();
   @Output() close = new EventEmitter<void>();
 
   newServerName = '';
@@ -20,6 +27,7 @@ export class ServerCreateComponent {
   codeArgs = '';
   codeBody = '';
   servertype = '';
+  serverpending = true;
   images: Record<string, string> = {
     tool: '/tool.png',
     resource: '/resource.png'
@@ -63,7 +71,8 @@ export class ServerCreateComponent {
       image: this.images[this.servertype],
       pkgs: this.selectedPackages,
       func_body:this.codeBody,
-      func_args:this.codeArgs
+      func_args:this.codeArgs,
+      pending:this.serverpending,
     });
     this.newServerName = '';
     this.newServerDesc = '';

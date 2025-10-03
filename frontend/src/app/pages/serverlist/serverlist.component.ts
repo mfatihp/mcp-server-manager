@@ -14,7 +14,7 @@ import { ServerlistService } from './serverlist.service';
 export class ServerlistComponent implements OnInit {
   constructor(private service: ServerlistService) {}
 
-  servers!: { name: string, description: string, image: string; }[];
+  servers!: { name: string, description: string, image: string; pending: boolean}[];
 
   ngOnInit(): void {
     this.servers = this.service.getServers();
@@ -37,7 +37,15 @@ export class ServerlistComponent implements OnInit {
     alert(`Edit: ${this.servers[index].name}`); 
   }
 
-  addServer(server: { name: string; description: string; serverType: string; image: string; pkgs: string[]; func_args: string; func_body: string}) {
+  addServer(server: { name: string; 
+                      description: string; 
+                      serverType: string; 
+                      image: string; 
+                      pkgs: string[]; 
+                      func_args: string; 
+                      func_body: string;
+                      pending: boolean;
+                    }) {
     this.servers.push({ ...server });
     this.service.addMCPServer(server);
   }
