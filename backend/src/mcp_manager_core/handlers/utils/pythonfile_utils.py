@@ -6,7 +6,8 @@ from handlers.data.pip_pkg_list import pkg_list
 
 
 def create_tool_file(function_name:str="ocaptai",
-                     function_type:str="tool", 
+                     function_type:str="tool",
+                     function_desc:str="",
                      func_args:str="a: int, b:int", 
                      func_body:str="   return a + b"):
     
@@ -15,6 +16,7 @@ def create_tool_file(function_name:str="ocaptai",
 
     pythonfile_content = template.render(
         name=function_name,
+        docstr=function_desc,
         o_type=function_type,
         f_args=func_args,
         mcp_function = textwrap.dedent(f"""
