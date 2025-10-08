@@ -213,6 +213,7 @@ docs/*.drawio
 test/
 redis.conf
 chart.png
+*.env
 backend/src/mcp_server_template/Dockerfile
 backend/src/mcp_server_template/mcp.py
 backend/src/mcp_server_template/user_requirements.txt
