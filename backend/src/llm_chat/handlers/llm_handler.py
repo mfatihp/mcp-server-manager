@@ -1,5 +1,7 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from handlers.utils import llm_pipe
+from handlers.db_handler import DBHandlerPG
+from handlers.registry_handler import FunctionRegistry
 import requests
 import os
 
@@ -8,8 +10,9 @@ from dotenv import dotenv_values
 
 
 
-class LlmHandler:
+class LlmHandler(DBHandlerPG, FunctionRegistry):
     def __init__(self):
+        super().__init__()
         # Model Init
         env_values = dotenv_values("llm_chat/.env")
         model_name = env_values("MODEL_NAME")
@@ -26,6 +29,10 @@ class LlmHandler:
 
 
     def response(self, prompt:str):
+        # TODO: Ensure mcp config list is converted to string
+        db_result = self.check_db()
+        func_info = self.bulk_add(db_result)
+
         # Update tool pool
         # 1. Detect Tool request
         context = llm_pipe(prompt=prompt, tools=self.tools, check_mcp=True)

@@ -3,7 +3,24 @@ from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
 from dotenv import dotenv_values
 
+from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.orm import declarative_base
 
+
+## ORM Models
+
+Base = declarative_base()
+
+class PGItemORM(Base):
+    __tablename__ = "mcp_servers"
+    id = Column(Integer, primary_key=True)
+    container_id = Column(String)
+    server_port = Column(String)
+    mcp_server_name = Column(String)
+    mcp_server_description = Column(String)
+    function_args = Column(JSONB)
+    function_body = Column(Text)
 
 
 
@@ -18,8 +35,22 @@ class DBHandlerPG:
     
 
     def check_db(self):
+        items = []
         with self.db_session as session:
-            session.execute(select(""))
+            result = session.execute(select(PGItemORM)).scalars().all()
+            for item in result:
+                items.append(
+                    {
+                        "container_id" : item.container_id,
+                        "server_port" : item.server_port,
+                        "mcp_server_name" : item.mcp_server_name,
+                        "mcp_server_description" : item.mcp_server_description,
+                        "function_args" : item.function_args
+                    }
+                )
+            
+
+        return items
     
 
     @contextmanager
@@ -37,3 +68,8 @@ class DBHandlerPG:
         
         finally:
             session.close()
+
+
+if __name__ == "__main__":
+    test = DBHandlerPG()
+    print(test.check_db())
