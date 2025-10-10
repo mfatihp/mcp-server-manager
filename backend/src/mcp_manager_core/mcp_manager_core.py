@@ -67,14 +67,20 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
 
 
 
-# TODO: Check MCP list
+# TODO: Get MCP Server list
 @core.get("/manager/check_list")
-async def check_list():
-    """check_list"""
+async def get_list():
+    """get_list"""
     # TODO: Check list of all mcp servers
     pass
 
 
+# TODO: Get MCP Server usage logs
+@core.get("/manager/get_logs")
+async def get_logs():
+    """get_logs"""
+    # TODO: Check list of all mcp servers
+    pass
 
 
 # Check MCP status

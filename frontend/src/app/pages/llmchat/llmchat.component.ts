@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LlmchatService } from './llmchat.service';
 
 
 interface Message {
@@ -24,12 +25,14 @@ export class LlmchatComponent {
 
   activeTab: 'servers' | 'logs' = 'servers';
 
+  // Receive this form redis
   servers = [
     { name: 'Server 1' },
     { name: 'Server 2' },
     { name: 'Server 3' }
   ];
 
+  // TODO: Receive this from log db (redis or postgre)
   logs = [
     'Server 1 started at 10:05',
     'Server 2 paused at 10:15',
