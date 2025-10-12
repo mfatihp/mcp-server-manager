@@ -21,6 +21,20 @@ services:
     volumes:
       - rds_mcp_manager_db:/data
       - ./backend/src/mcp_manager_db/redis.conf:/usr/local/etc/redis/redis.conf
+  
+  mcp_log_list_fetcher:
+    build:
+      context: ./backend/src/log_list_fetcher
+      dockerfile: Dockerfile
+    ports:
+      - 8090:8090
+    restart: unless-stopped
+  
+  mcp_db_syncer:
+    build:
+      context: ./backend/src/db_syncer
+      dockerfile: Dockerfile
+    restart: unless-stopped
     
 
 

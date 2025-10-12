@@ -12,16 +12,18 @@ import (
 )
 
 type RDSItem struct {
-	Container_id    string
-	Mcp_server_name string
-	Server_status   string
-	Server_port     string
+	Container_id    string `json:"container_id"`
+	Mcp_server_name string `json:"mcp_server_name"`
+	Func_args       string `json:"func_args"`
+	Server_status   string `json:"server_status"`
+	Server_port     string `json:"server_port"`
 }
 
 type MCPServer struct {
-	container_id    string
-	mcp_server_name string
-	server_port     string
+	Container_id    string `json:"container_id"`
+	Mcp_server_name string `json:"mcp_server_name"`
+	Func_args       string `json:"func_args"`
+	Server_port     string `json:"server_port"`
 }
 
 func main() {
@@ -48,7 +50,7 @@ func redis_log_fetcher() (map[string]MCPServer, error) {
 
 	// Fetch from Redis DB
 	var cursor uint64
-	redisKeys, _, err := rdb.Scan(ctx, cursor, "contId:*", 100).Result()
+	redisKeys, _, err := rdb.Scan(ctx, cursor, "contID:*", 100).Result()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -65,11 +67,12 @@ func redis_log_fetcher() (map[string]MCPServer, error) {
 			continue
 		}
 
-		id := key[len("contId:"):]
+		id := key[len("contID:"):]
 		redisUsers[id] = MCPServer{
-			container_id:    id,
-			mcp_server_name: data.Mcp_server_name,
-			server_port:     data.Server_port,
+			Container_id:    id,
+			Mcp_server_name: data.Mcp_server_name,
+			Func_args:       data.Func_args,
+			Server_port:     data.Server_port,
 		}
 	}
 

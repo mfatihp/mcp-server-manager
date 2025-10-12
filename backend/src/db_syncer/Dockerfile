@@ -4,12 +4,13 @@ WORKDIR /app
 
 COPY . .
 
-RUN go build -o syncer syncer.go
+RUN go build -o db_syncer db_syncer.go
 
 
 
 FROM scratch
 
-COPY  --from=builder /app/syncer /syncer
+COPY  --from=builder /app/db_syncer /db_syncer
+COPY .env .
 
-CMD ["/syncer"]
+CMD ["/db_syncer"]

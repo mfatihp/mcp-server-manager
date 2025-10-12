@@ -79,7 +79,7 @@ func syncUsers(pg *pgxpool.Pool, rdb *redis.Client, ctx context.Context) error {
 
 	// Fetch from Redis DB
 	var cursor uint64
-	redisKeys, _, err := rdb.Scan(ctx, cursor, "contId:*", 10).Result()
+	redisKeys, _, err := rdb.Scan(ctx, cursor, "contID:*", 10).Result()
 
 	if err != nil {
 		return err
