@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LlmchatService } from './llmchat.service';
+import { ViewChild, ElementRef } from '@angular/core';
 
 
-interface Message {
-  text: string;
-  sender: 'me' | 'bot';
+type LogEntry = {
+  serverName: string;
+  actionTime: string; 
 }
 
 
@@ -17,40 +18,45 @@ interface Message {
   templateUrl: './llmchat.component.html'
 })
 export class LlmchatComponent {
-  messages: Message[] = [
-    { text: 'Hi! 👋', sender: 'bot' },
-    { text: 'Hello! How are you?', sender: 'me' }
-  ];
-  newMessage: string = '';
+  @ViewChild('chatMessages') private chatMessagesRef!: ElementRef;
+  constructor(private service: LlmchatService) {}
+
+  userInput: string = '';
+  messages: { sender: 'user' | 'bot'; text: string }[] = [];
+  servers: { name: string }[] = [];
+
+  mcpLogs: string[] = [];
+  rawEntries: { serverName: string; actionTime: string }[] = [];
 
   activeTab: 'servers' | 'logs' = 'servers';
 
-  // Receive this form redis
-  servers = [
-    { name: 'Server 1' },
-    { name: 'Server 2' },
-    { name: 'Server 3' }
-  ];
+  formatList(items: LogEntry[]) {
+    items.forEach((item) => {
+      this.mcpLogs.push(`${item.serverName} is called at ${item.actionTime}`);
+    })
+  }
 
-  // TODO: Receive this from log db (redis or postgre)
-  logs = [
-    'Server 1 started at 10:05',
-    'Server 2 paused at 10:15',
-    'Server 3 deleted at 10:30'
-  ];
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+
+  scrollToBottom() {
+    try {
+      this.chatMessagesRef.nativeElement.scrollTop = this.chatMessagesRef.nativeElement.scrollHeight;
+    } catch (err) {
+      console.error('Scroll failed:', err);
+    }
+  }
 
   sendMessage() {
-    if (!this.newMessage.trim()) return;
+    this.service.getAnswer(this.messages);
+    this.scrollToBottom();
+  }
 
-    // Add user message
-    this.messages.push({ text: this.newMessage, sender: 'me' });
+  getServerList() {}
 
-    const userMsg = this.newMessage;
-    this.newMessage = '';
-
-    // Mock bot reply
-    setTimeout(() => {
-      this.messages.push({ text: `You said: "${userMsg}"`, sender: 'bot' });
-    }, 800);
+  getServerLogs() {
+    this.service.getLogs(this.rawEntries);
+    this.formatList(this.rawEntries);
   }
 }
