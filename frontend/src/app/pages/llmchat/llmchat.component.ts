@@ -36,21 +36,21 @@ export class LlmchatComponent {
     })
   }
 
-  ngAfterViewChecked() {
-    this.scrollToBottom();
-  }
+  // ngAfterViewChecked() {
+  //   this.scrollToBottom();
+  // }
 
-  scrollToBottom() {
-    try {
-      this.chatMessagesRef.nativeElement.scrollTop = this.chatMessagesRef.nativeElement.scrollHeight;
-    } catch (err) {
-      console.error('Scroll failed:', err);
-    }
-  }
+  // scrollToBottom() {
+  //   try {
+  //     this.chatMessagesRef.nativeElement.scrollTop = this.chatMessagesRef.nativeElement.scrollHeight;
+  //   } catch (err) {
+  //     console.error('Scroll failed:', err);
+  //   }
+  // }
 
   sendMessage() {
     this.service.getAnswer(this.messages);
-    this.scrollToBottom();
+    //this.scrollToBottom();
   }
 
   getServerList() {}

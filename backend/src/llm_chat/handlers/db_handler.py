@@ -23,10 +23,9 @@ class PGItemORM(Base):
     function_body = Column(Text)
 
 
-
 class DBHandlerPG:
     def __init__(self):
-        env_info = dotenv_values("db.env")
+        env_info = dotenv_values("../.env")
 
         pg_db_url = f"postgresql+psycopg2://{env_info["PG_USER"]}:{env_info["PG_PWD"]}@localhost:{env_info["PG_PORT"]}/{env_info["PG_DB"]}"
         self.db_engine = create_engine(pg_db_url)
