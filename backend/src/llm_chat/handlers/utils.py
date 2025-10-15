@@ -19,7 +19,7 @@ def llm_pipe(prompt: str, model_config: dict, func_json: str={}):
     output_ids = generated_ids[0][len(model_inputs.input_ids[0]):].tolist() 
     content = model_config["tokenizer"].decode(output_ids, skip_special_tokens=True)
 
-    return {"content:": content}
+    return content
 
 
 

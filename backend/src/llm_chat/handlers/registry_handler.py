@@ -12,6 +12,9 @@ class ToolModel(BaseModel):
 class FunctionRegistry(BaseModel):
     functions: Dict[str, ToolModel] = {}
 
+    class Config:
+        extra = "allow" 
+
     def add_function(self, name: str, args: List[str] = None):
         """Add a single function"""
         self.functions[name] = ToolModel(args=args or [])

@@ -1,8 +1,9 @@
 from jinja2 import Environment, FileSystemLoader
 
+# 
+# 3.12.11-bookworm
 
-
-def create_dockerfile(base_image="python:3.12.11-bookworm", 
+def create_dockerfile(base_image="python:3.12.12-slim", 
                       packages=None, 
                       tool_name=None, 
                       port=None, 

@@ -10,9 +10,10 @@ from dotenv import dotenv_values
 
 
 
-class LlmHandler(DBHandlerPG, FunctionRegistry):
+class LlmHandler(DBHandlerPG):
     def __init__(self):
         super().__init__()
+        self.registry = FunctionRegistry()
         # Model Init
         env_values = dotenv_values("../.env")
         model_name = env_values["MODEL_NAME"]
@@ -52,22 +53,22 @@ class LlmHandler(DBHandlerPG, FunctionRegistry):
         }
 
 
-    def response(self, prompt:str):
+    def response(self, user_prompt:str):
         # TODO: Ensure mcp config list is converted to string
-        # db_result = self.check_db()
-        # func_info = self.bulk_add(db_result)
+        db_result = self.check_db()
+        self.registry.bulk_add(db_result)
 
         # Update tool pool
         # 1. Detect Tool request
-        context = llm_pipe(prompt=prompt, model_config=self.model_config)
+        context = self.llm_pipe(prompt=user_prompt)
         print(context)
 
-        # if context == "OK":
-        # # 2. If Tool OK call mcp_request
-        #     result = self.mcp_request()
-        # else:
-        # # 3. Else return model response with no tool use info
-        #     pass
+        if context["need_mcp"] == "OK":
+        # 2. If Tool OK call mcp_request
+            result = self.mcp_request()
+        else:
+        # 3. Else return model response with no tool use info
+            pass
 
 
     def check_tool_list(self):
@@ -79,8 +80,29 @@ class LlmHandler(DBHandlerPG, FunctionRegistry):
         # Tool or Resource call
         pass
 
+    def llm_pipe(self, prompt: str, func_json: str={}):
+    
+        messages = [
+                {"role": "system", "content": f"""{self.instruction}\n
+                                                  {func_json}"""},
+                {"role": "user", "content": prompt}
+                ]
+        print(messages[0])
+            
+        text = self.tokenizer.apply_chat_template(messages,
+                                                  tokenize=False,
+                                                  add_generation_prompt=True)
+        
+        model_inputs = self.tokenizer([text], return_tensors="pt").to(self.model.device)
+        generated_ids = self.model.generate(**model_inputs, max_new_tokens=16384)
+        output_ids = generated_ids[0][len(model_inputs.input_ids[0]):].tolist() 
+        content = self.tokenizer.decode(output_ids, skip_special_tokens=True)
+
+        return content
+
 
 
 if __name__ == "__main__":
     t = LlmHandler()
+    #print(LlmHandler.__mro__)
     t.response("Calculate 1 + 1")
