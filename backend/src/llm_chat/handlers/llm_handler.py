@@ -22,20 +22,31 @@ class LlmHandler(DBHandlerPG, FunctionRegistry):
                                                           dtype="auto",
                                                           device_map="auto")
         
-        self.instruct = """
-                        You are a chat that use external functions. When you receive an input from user,check the function list below, 
-                        if user message contains or mention a function, return JSON output using following format and do not use any spaces:
-                        {"need_mcp":"OK", "answer":"", "function_name": <function_name>, "args": <["arg1", "arg2", etc.]>}
+        self.instruction = """
+                            You are a function-aware chat assistant. You can analyze user messages and decide whether a function call is needed 
+                            based on the function list provided below.
 
-                        if user not contain a request create an answer in following format and do not use any spaces and replace your answer 
-                        in place of "<Insert Your Answer Here>":
-                        {"need_mcp":"NOK", "answer":<Insert Your Answer Here>, "function_name":"", "args": []}
+                            When you receive a message:
+                            1. Check if the user's input explicitly mentions or implies the use of any function from the list.
+                            2. If a function should be used:
+                            - Return a compact JSON object **with no extra spaces or line breaks** in the following format:
+                                {"need_mcp":"OK","answer":"","function_name":"<function_name>","args":["<arg1>","<arg2>",...]}
+                            3. If no function is relevant:
+                            - Return a compact JSON object **with no extra spaces or line breaks** in the following format:
+                                {"need_mcp":"NOK","answer":"<Insert your natural language answer here>","function_name":"","args":[]}
 
-                        Function list is below:
-                        """
+                            Important rules:
+                            - Do not add explanations, formatting, or text outside of the JSON object.
+                            - Preserve JSON syntax strictly (no trailing commas, no missing quotes).
+                            - Match function names and argument positions exactly as defined.
+                            - Always output either "OK" or "NOK" in the "need_mcp" field.
+                            - Never include extra whitespace anywhere in the output.
+
+                            Function list:
+                            """
         
         self.model_config = {
-            "instruction": self.instruct,
+            "instruction": self.instruction,
             "tokenizer": self.tokenizer,
             "model": self.model
         }
