@@ -36,7 +36,13 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     
-
+  llm_chat_service:
+    build:
+        context: ./backend/src/llm_chat
+        dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8070:8070"
 
 volumes:
   pg_mcp_manager_db:

@@ -1,6 +1,6 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from db_handler import DBHandlerPG
-from registry_handler import FunctionRegistry
+from handlers.db_handler import DBHandlerPG
+from handlers.registry_handler import FunctionRegistry
 import json
 import requests
 
@@ -15,14 +15,14 @@ class LlmHandler(DBHandlerPG):
         self.registry = FunctionRegistry()
         
         # Model Init
-        env_values = dotenv_values("../.env")
+        env_values = dotenv_values(".env")
         model_name = env_values["MODEL_NAME"]
 
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name, local_files_only=True)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, local_files_only=False)
         self.model = AutoModelForCausalLM.from_pretrained(model_name, 
                                                           dtype="auto",
                                                           device_map="auto", 
-                                                          local_files_only=True)
+                                                          local_files_only=False)
         
         self.instruction = """
                             You are a function-aware chat assistant. You can analyze user messages and decide whether a function call is needed 
