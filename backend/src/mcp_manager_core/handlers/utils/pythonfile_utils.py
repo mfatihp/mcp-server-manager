@@ -2,22 +2,27 @@ from jinja2 import Environment, FileSystemLoader
 from typing import List
 import textwrap
 
-from handlers.data.pip_pkg_list import pkg_list
+# from handlers.data.pip_pkg_list import pkg_list
 
 
 def create_tool_file(function_name:str="ocaptai",
                      function_type:str="tool",
                      function_desc:str="",
-                     func_args:str="a: int, b:int", 
-                     func_body:str="   return a + b"):
+                     func_args:str="x: int, y: int", 
+                     func_body:str="   return x + y"):
     
     env = Environment(loader=FileSystemLoader("../mcp_server_template/python_templates/"))
     template = env.get_template("mcp_tool_template.py.j2")
 
+    if function_type == "tool":
+        otype = "post"
+    else:
+        otype = "get"
+
     pythonfile_content = template.render(
         name=function_name,
         docstr=function_desc,
-        o_type=function_type,
+        o_type=otype,
         f_args=func_args,
         mcp_function = textwrap.dedent(f"""
         {func_body}

@@ -15,7 +15,7 @@ class DockerHandler:
         try:
             create_tool_file(function_name=fname,
                             function_type=ftype,
-                            func_args=fargs,
+                            func_args=self.arg_seperator(fargs),
                             func_body=fbody)
             
             create_dockerfile(tool_name=fname,
@@ -49,10 +49,22 @@ class DockerHandler:
 
     def delete(self, contID:str):
         self.docker_cli.containers.get(container_id=contID).kill()
+    
+    @staticmethod
+    def arg_seperator(arg:str):
+        a = arg.split(",")
+        b = [i.split(":")[0].strip() for i in a]
+        c = str(b).replace("[", "").replace("]", "").replace("'", "")
+        
+        return c
 
 
 
 
 if __name__ == "__main__":
-    dh = DockerHandler()
-    dh.create(fname="wow", tag="wow:1.0.0", port="8000")
+    s = "x: int, y: int"
+    a = s.split(",")
+    b = [i.split(":")[0].strip() for i in a]
+    c = str(b).replace("[", "").replace("]", "").replace("'", "")
+
+    print(c)

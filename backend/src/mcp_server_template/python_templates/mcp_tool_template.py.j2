@@ -1,7 +1,8 @@
-from mcp_utils.mcp_handler import MCP
+from fastapi import FastAPI, Body
+import uvicorn
 
 
-mcp = MCP()
+mcp = FastAPI()
 
 def {{ name -}}({{- f_args -}}):
 {%- filter indent(width=4) %}
@@ -13,6 +14,6 @@ def {{ name -}}({{- f_args -}}):
 
 
 @mcp.{{ o_type }}("/{{name}}")
-def mcp_service():
-    resp = {{ name -}}()
+def mcp_service(items: dict = Body(...)):
+    resp = {{ name -}}(**items)
     return {"Response": resp}

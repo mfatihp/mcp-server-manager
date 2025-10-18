@@ -13,6 +13,7 @@ class LlmHandler(DBHandlerPG):
     def __init__(self):
         super().__init__()
         self.registry = FunctionRegistry()
+        
         # Model Init
         env_values = dotenv_values("../.env")
         model_name = env_values["MODEL_NAME"]
@@ -46,51 +47,92 @@ class LlmHandler(DBHandlerPG):
                             Function list:
                             """
         
+        self.instruction_2 = """
+                            You are a response synthesizer that combines user requests with external data.
+
+                            Inputs you receive:
+                            1. user_message — what the user originally asked.
+                            2. mcp_response — the structured data or result returned by an external function.
+
+                            Your goal:
+                            - Use the mcp_response to create a helpful and natural-language answer to the user.
+                            - The answer should sound like a normal chat reply, not just raw data.
+                            - Avoid mentioning technical details about MCP, JSON, or functions.
+
+                            Output format:
+                            Return a single compact JSON object (no extra spaces or line breaks):
+                            {"final_answer":"<Your complete, natural-language answer to the user>"}
+
+                            Rules:
+                            - Make the answer short, polite, and clear (for example: “The result is 2.” instead of just “2”).
+                            - You can include short context like “Here’s the result…” or “That equals…” if appropriate.
+                            - Never add extra formatting or text outside the JSON object.
+                            """
+        
         self.model_config = {
             "instruction": self.instruction,
             "tokenizer": self.tokenizer,
             "model": self.model
         }
 
+        self.latest_prompt = ""
+
 
     def response(self, user_prompt:str):
+        self.latest_prompt = user_prompt
         db_result = self.check_db()
-        # print(db_result)
+
         self.registry.bulk_add(db_result)
 
         # Update tool pool
         # 1. Detect Tool request
-        context = self.llm_pipe(prompt=user_prompt, func_json=self.registry.functions)
+        context = self.llm_pipe(func_json=self.registry.functions)
 
         if context["need_mcp"] == "OK":
         # 2. If Tool OK call mcp_request
-            result = self.mcp_request(context=context)
+            mcp_answer = self.mcp_request(context=context)
+            result = self.llm_pipe(enhance_msg=mcp_answer)
+
+            # print(result)
+            return result["final_answer"]
         else:
         # 3. Else return model response with no tool use info
-            pass
-
-
-    def check_tool_list(self):
-        # Check possible functions by descriptions
-        pass
+            return context["answer"]
+            # print(context["answer"])
 
 
     def mcp_request(self, context:dict):
         # Tool or Resource call
         func_url = f"http://localhost:{self.registry.routes[context["function_name"]]}/{context["function_name"]}"
 
-        resp = requests.post(url=func_url, json=context["args"])
+        type_map = {
+            "int": int,
+            "float": float,
+            "str": str,
+            "bool": lambda v: v.lower() in ("true", "1", "yes")
+        }
+
+        converted = {k: type_map[context["arg_types"][k]](v) for k, v in context["args"].items()}
+
+        resp = requests.post(url=func_url, json=converted)
+
+        return resp.json()
 
         # TODO: URI ayarlaması yapılacak veya tool - resource ayrımı için lojik kurulacak.
 
-    def llm_pipe(self, prompt: str, func_json: str={}):
-    
-        messages = [
-                {"role": "system", "content": f"""{self.instruction}\n
-                                                  {func_json}"""},
-                {"role": "user", "content": prompt}
-                ]
-        print(messages[0])
+
+    def llm_pipe(self, func_json:str = None, enhance_msg:dict = None):
+        if enhance_msg == None:
+            messages = [
+                    {"role": "system", "content": f"""{self.instruction}\n
+                                                      {func_json}"""},
+                    {"role": "user", "content": self.latest_prompt}
+                    ]
+        else: 
+            messages = [
+                    {"role": "system", "content": f"""{self.instruction_2}"""},
+                    {"role": "user", "content": f"User message: {self.latest_prompt}\nMCP response: {enhance_msg}"}
+                    ]
             
         text = self.tokenizer.apply_chat_template(messages,
                                                   tokenize=False,
@@ -107,4 +149,4 @@ class LlmHandler(DBHandlerPG):
 
 if __name__ == "__main__":
     t = LlmHandler()
-    t.response("Calculate 1 + 1")
+    t.response("What is result of 3 plus 7?")
