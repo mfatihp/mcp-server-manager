@@ -10,15 +10,16 @@ type LogEntry = {
   actionTime: string; 
 }
 
-
 @Component({
   selector: 'app-llmchat',
   imports: [CommonModule, FormsModule],
   standalone: true,
   templateUrl: './llmchat.component.html'
 })
+
 export class LlmchatComponent {
-  @ViewChild('chatMessages') private chatMessagesRef!: ElementRef;
+  @ViewChild('chatMessages', { static: false }) private chatMessagesRef!: ElementRef;
+
   constructor(private service: LlmchatService) {}
 
   userInput: string = '';
@@ -36,21 +37,37 @@ export class LlmchatComponent {
     })
   }
 
-  // ngAfterViewChecked() {
-  //   this.scrollToBottom();
-  // }
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
 
-  // scrollToBottom() {
-  //   try {
-  //     this.chatMessagesRef.nativeElement.scrollTop = this.chatMessagesRef.nativeElement.scrollHeight;
-  //   } catch (err) {
-  //     console.error('Scroll failed:', err);
-  //   }
-  // }
+  scrollToBottom() {
+    // Safe check
+    if (!this.chatMessagesRef?.nativeElement) return;
 
-  sendMessage() {
-    this.service.getAnswer(this.messages);
-    //this.scrollToBottom();
+    try {
+      // Scroll with a tiny delay for async rendering
+      setTimeout(() => {
+        this.chatMessagesRef.nativeElement.scrollTop = this.chatMessagesRef.nativeElement.scrollHeight;
+      }, 0);
+    } catch (err) {
+      console.error('Scroll failed:', err);
+    }
+  }
+
+  async sendMessage() {
+    const text = this.userInput.trim();
+    if (!text) return;
+
+    // Add user message immediately
+    this.messages.push({ sender: 'user', text });
+    this.userInput = '';
+
+    // Get bot reply
+    const reply = await this.service.getAnswer(text);
+    this.messages.push({ sender: 'bot', text: reply });
+
+    this.scrollToBottom();
   }
 
   getServerList() {}

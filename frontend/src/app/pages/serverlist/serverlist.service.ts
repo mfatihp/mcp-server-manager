@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ServerItem } from './models/server-item.model';
-import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServerlistService {
+  private serversSubject = new BehaviorSubject<ServerItem[]>([]);
+  servers$ = this.serversSubject.asObservable();
 
   private mcpCreateUrl = 'http://localhost:8000/manager/create_mcp_server';
   private mcpControlUrl = 'http://localhost:8000/manager/control_mcp_server';
   private mcpCheckListUrl = 'http://localhost:8000/manager/check_list';
-
-  // private func = "";
 
   mcp_schema!: {
     "server_name": string, 
@@ -32,16 +32,7 @@ export class ServerlistService {
     return this.servers;
   }
 
-  runMCPServer(server: { name: string; 
-                         description: string; 
-                         serverType: string; 
-                         image: string; 
-                         pkgs: string[],
-                         func_args: string,
-                         func_body: string,
-                         pending: boolean,
-                         IsRunning: boolean,
-                        }) { 
+  runMCPServer(server: ServerItem) { 
     // TODO: Pause & Play, pause tuşu bir kere basıldığında pause butonu değişecek ve play butonu olacak. Ona göre de işlev eklenecek
 
     this.http.post(this.mcpControlUrl, {
@@ -58,16 +49,7 @@ export class ServerlistService {
                                               });
   }
 
-  pauseMCPServer(server: { name: string; 
-                         description: string; 
-                         serverType: string; 
-                         image: string; 
-                         pkgs: string[],
-                         func_args: string,
-                         func_body: string,
-                         pending: boolean,
-                         IsRunning: boolean,
-                        }) { 
+  pauseMCPServer(server: ServerItem) { 
     // TODO: Pause & Play, pause tuşu bir kere basıldığında pause butonu değişecek ve play butonu olacak. Ona göre de işlev eklenecek
 
     this.http.post(this.mcpControlUrl, {
@@ -84,8 +66,7 @@ export class ServerlistService {
                                               });
   }
   
-  deleteMCPServer(index: number) { 
-    this.servers.splice(index, 1); 
+  deleteMCPServer(server: ServerItem) { 
 
     this.http.post(this.mcpControlUrl, {
                                         serverId: "",
@@ -99,31 +80,11 @@ export class ServerlistService {
                                                   }
                                                 });
   }
-  
-  editMCPServer(index: number) { 
-    alert(`Edit: ${this.servers[index].name}`);
 
-    this.http.post(this.mcpControlUrl, {
-      serverId: "",
-      controlCommand: "edit",
-      controlParams: {
-          server_name: "",
-          description: "",
-          func: "",
-          servertype: ""
-      }
-    });    
-  }
-
-  addMCPServer(server: { name: string; 
-                         description: string; 
-                         serverType: string; 
-                         image: string; 
-                         pkgs: string[],
-                         func_args: string,
-                         func_body: string,
-                         pending: boolean
-                        }) {
+  addMCPServer(server: ServerItem) {
+    // Show in UI immediately
+    const current = this.serversSubject.value;
+    this.serversSubject.next([...current, server]);
 
     this.mcp_schema = {"server_name": server.name, 
                         "description": server.description,

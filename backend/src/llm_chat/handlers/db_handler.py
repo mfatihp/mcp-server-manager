@@ -35,7 +35,8 @@ class DBHandlerPG:
 
     def check_db(self):
         items = []
-        with self.db_session as session:
+        # with self.db_session as session:
+        with self.db_session_scope(self.db_engine) as session:
             result = session.execute(select(PGItemORM)).scalars().all()
             for item in result:
                 items.append(
@@ -47,7 +48,6 @@ class DBHandlerPG:
                         "function_args" : item.function_args
                     }
                 )
-            
 
         return items
     

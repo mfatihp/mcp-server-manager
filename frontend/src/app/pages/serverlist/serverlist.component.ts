@@ -15,26 +15,19 @@ import { ServerItem } from './models/server-item.model';
 export class ServerlistComponent implements OnInit {
   constructor(private service: ServerlistService) {}
 
-  //servers!: { name: string, description: string, image: string; pending: boolean; IsRunning: boolean}[];
   servers: ServerItem[] = [];
 
   ngOnInit(): void {
-    this.servers = this.service.getServers();
+    //this.servers = this.service.getServers();
+    this.service.servers$.subscribe(data => {
+      this.servers = data;
+    });
   }
 
 
   showCreateModal = false;
 
-  pauseServer(server: { name: string; 
-                      description: string; 
-                      serverType: string; 
-                      image: string; 
-                      pkgs: string[]; 
-                      func_args: string; 
-                      func_body: string;
-                      pending: boolean;
-                      IsRunning: boolean;
-                    }) {
+  pauseServer(server: ServerItem) {
     if (server.IsRunning == false) {
       this.service.pauseMCPServer(server);
     } else {
@@ -42,26 +35,15 @@ export class ServerlistComponent implements OnInit {
     }
   }
   
-  deleteServer(index: number) { 
-    this.servers.splice(index, 1); 
-    this.service.deleteMCPServer(index); // TODO: Container işlemlerinin tamamlanması gerekiyor. arg olarak contID olacak.
-  }
-  
-  editServer(index: number) { 
-    alert(`Edit: ${this.servers[index].name}`); 
+  deleteServer(server: ServerItem) { 
+    this.service.deleteMCPServer(server); // TODO: Container işlemlerinin tamamlanması gerekiyor. arg olarak contID olacak.
   }
 
-  addServer(server: { name: string; 
-                      description: string; 
-                      serverType: string; 
-                      image: string; 
-                      pkgs: string[]; 
-                      func_args: string; 
-                      func_body: string;
-                      pending: boolean;
-                      IsRunning: boolean;
-                    }) {
-    this.servers.push({ ...server });
+  addServer(server: ServerItem) {
+    // Initialize pending state before sending request
+    server.pending = true;
+    server.IsRunning = false;
+
     this.service.addMCPServer(server);
   }
 
