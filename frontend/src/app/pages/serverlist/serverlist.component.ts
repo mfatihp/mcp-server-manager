@@ -18,7 +18,7 @@ export class ServerlistComponent implements OnInit {
   servers: ServerItem[] = [];
 
   ngOnInit(): void {
-    //this.servers = this.service.getServers();
+    this.service.getServers();
     this.service.servers$.subscribe(data => {
       this.servers = data;
     });

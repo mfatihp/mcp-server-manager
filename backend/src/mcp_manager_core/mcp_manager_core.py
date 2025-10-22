@@ -77,11 +77,11 @@ async def get_list():
 
 
 # TODO: Get MCP Server usage logs
-@core.get("/manager/get_logs")
-async def get_logs():
-    """get_logs"""
-    # TODO: Check list of all mcp servers
-    pass
+# @core.get("/manager/get_logs")
+# async def get_logs():
+#     """get_logs"""
+#     # TODO: Check list of all mcp servers
+#     pass
 
 
 # Check MCP status

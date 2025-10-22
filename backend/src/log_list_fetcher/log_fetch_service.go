@@ -26,11 +26,31 @@ type MCPServer struct {
 	Server_port     string `json:"server_port"`
 }
 
+// Middleware to add CORS headers
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		// Handle preflight (OPTIONS)
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
-	http.HandleFunc("/log_list", log_fetcher)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/log_list", log_fetcher)
+
+	handler := corsMiddleware(mux)
 
 	log.Println("🚀 Server started on :8090")
-	if err := http.ListenAndServe(":8090", nil); err != nil {
+	if err := http.ListenAndServe(":8090", handler); err != nil {
 		log.Fatal(err)
 	}
 }

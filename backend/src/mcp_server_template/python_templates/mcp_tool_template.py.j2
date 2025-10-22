@@ -1,8 +1,11 @@
 from fastapi import FastAPI, Body
+from mcp_utils.logger import log_success_responses
 import uvicorn
 
 
 mcp = FastAPI()
+
+mcp.middleware("http")(log_success_responses)
 
 def {{ name -}}({{- f_args -}}):
 {%- filter indent(width=4) %}
