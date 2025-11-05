@@ -39,7 +39,7 @@ export class ServerlistService {
     // TODO: Pause & Play, pause tuşu bir kere basıldığında pause butonu değişecek ve play butonu olacak. Ona göre de işlev eklenecek
 
     this.http.post(this.mcpControlUrl, {
-                                        serverId: "",
+                                        serverId: server.contID,
                                         controlCommand: "pause"
                                       }).subscribe({
                                                 next: (response) => {
@@ -56,7 +56,7 @@ export class ServerlistService {
     // TODO: Pause & Play, pause tuşu bir kere basıldığında pause butonu değişecek ve play butonu olacak. Ona göre de işlev eklenecek
 
     this.http.post(this.mcpControlUrl, {
-                                        serverId: "",
+                                        serverId: server.contID,
                                         controlCommand: "pause"
                                       }).subscribe({
                                                 next: (response) => {
@@ -72,7 +72,7 @@ export class ServerlistService {
   deleteMCPServer(server: ServerItem) { 
 
     this.http.post(this.mcpControlUrl, {
-                                        serverId: "",
+                                        serverId: server.contID,
                                         controlCommand: "delete"
                                       }).subscribe({
                                                   next: (response) => {
@@ -85,27 +85,28 @@ export class ServerlistService {
   }
 
   addMCPServer(server: ServerItem) {
-    // Show in UI immediately
     const current = this.serversSubject.value;
-    this.serversSubject.next([...current, server]);
 
-    this.mcp_schema = {"server_name": server.name, 
-                        "description": server.description,
-                        "servertype": server.serverType,
-                        "pkgs": server.pkgs,
-                        "func_args": server.func_args, 
-                        "func_body": server.func_body, 
-                      }
+    this.mcp_schema = {
+      "server_name": server.name,
+      "description": server.description,
+      "servertype":  server.serverType,
+      "pkgs":        server.pkgs,
+      "func_args":   server.func_args,
+      "func_body":   server.func_body,
+    }
 
-    this.http.post(this.mcpCreateUrl, this.mcp_schema).subscribe({
-                                                            next: (response) => {
-                                                              console.log("Success:", response);
-                                                              server.pending = false;
-                                                            },
-                                                            error: (error) => {
-                                                              console.log("Error:", error);
-                                                              server.pending = false;
-                                                            }
-                                                          });
+    this.http.post<any>(this.mcpCreateUrl, this.mcp_schema).subscribe({
+      next: (response) => {
+        console.log("Success:", response);
+        server.contID = response.contID,
+        server.pending = false;
+        this.serversSubject.next([...current, server]);
+      },
+      error: (error) => {
+        console.log("Error:", error);
+        server.pending = false;
+      }
+    });
   }
 }

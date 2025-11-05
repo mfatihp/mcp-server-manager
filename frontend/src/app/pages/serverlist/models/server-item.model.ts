@@ -1,4 +1,5 @@
 export interface ServerItem {
+  contID: string;
   name: string;
   description: string;
   serverType: string;

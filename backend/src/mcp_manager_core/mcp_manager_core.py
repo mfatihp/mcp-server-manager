@@ -60,6 +60,8 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
 
     db_handler_pg.db_insert(pg_entry=pg_entry)
 
+    return {"contID": container_id}
+
 
 
     # TODO: Register description into the vector db.
