@@ -10,17 +10,21 @@ import { FormsModule } from '@angular/forms';
 })
 
 export class ServerCreateComponent {
-  @Output() serverCreated = new EventEmitter<{ name: string; 
-                                               description: string; 
-                                               serverType: string; 
-                                               image: string; 
-                                               pkgs: string[]; 
-                                               func_body: string; 
-                                               func_args: string; 
-                                               pending: boolean;
-                                               IsRunning: boolean }>();
+  @Output() serverCreated = new EventEmitter<{
+                                              contID: string;
+                                              name: string;
+                                              description: string;
+                                              serverType: string;
+                                              image: string;
+                                              pkgs: string[];
+                                              func_body: string;
+                                              func_args: string;
+                                              pending: boolean;
+                                              IsRunning: boolean
+                                            }>();
   @Output() close = new EventEmitter<void>();
 
+  newContId = '';
   newServerName = '';
   newServerDesc = '';
   schemaJson = '{\n  "description": "value"\n}';
@@ -67,6 +71,7 @@ export class ServerCreateComponent {
   createServer() {
     if (!this.newServerName) return;
     this.serverCreated.emit({
+      contID: this.newContId,
       name: this.newServerName,
       description: this.newServerDesc,
       serverType: this.servertype,

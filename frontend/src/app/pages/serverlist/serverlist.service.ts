@@ -30,9 +30,9 @@ export class ServerlistService {
 
   async getServers() {
     console.log("hey");
-    const response = await fetch(this.mcpCheckListUrl, {method: "GET"});
-    console.log(response);
-    return this.servers;
+    // const response = await fetch(this.mcpCheckListUrl, {method: "GET"});
+    // console.log(response);
+    // return this.servers;
   }
 
   runMCPServer(server: ServerItem) { 
@@ -40,7 +40,8 @@ export class ServerlistService {
 
     this.http.post(this.mcpControlUrl, {
                                         serverId: server.contID,
-                                        controlCommand: "pause"
+                                        controlCommand: "pause",
+                                        controlParams: {}
                                       }).subscribe({
                                                 next: (response) => {
                                                   console.log("Success:", response);
@@ -85,7 +86,11 @@ export class ServerlistService {
   }
 
   addMCPServer(server: ServerItem) {
+    server.pending = true;
     const current = this.serversSubject.value;
+
+    // ➜ Immediately add to list so UI shows it
+    this.serversSubject.next([...current, server]);
 
     this.mcp_schema = {
       "server_name": server.name,
@@ -101,11 +106,19 @@ export class ServerlistService {
         console.log("Success:", response);
         server.contID = response.contID,
         server.pending = false;
-        this.serversSubject.next([...current, server]);
+
+        // Trigger UI update
+        this.serversSubject.next([...this.serversSubject.value]);
       },
       error: (error) => {
         console.log("Error:", error);
         server.pending = false;
+        // 3. Remove the created UI item if request fails
+        const updated = this.serversSubject
+          .value
+          .filter(s => s !== server);
+
+        this.serversSubject.next(updated);
       }
     });
   }
