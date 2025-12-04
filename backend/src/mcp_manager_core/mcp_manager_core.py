@@ -117,7 +117,6 @@ async def control_mcp_server(control_params: MCPControlSchema):
                 # Delete postgresql entry
                 db_handler_pg.db_delete(contID=control_params.serverId)
 
-
             case "restart":
                 # Container restart
                 docker_handler.restart(contID=control_params.serverId)

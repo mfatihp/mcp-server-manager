@@ -30,7 +30,7 @@ class ControlParams(BaseModel):
 class MCPControlSchema(BaseModel):
     serverId: str
     controlCommand: str
-    controlParams: Optional[Dict[str, ControlParams]]
+    controlParams: Optional[Dict[str, ControlParams]] = None
 
 
 class PGItem(BaseModel):
