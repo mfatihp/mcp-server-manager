@@ -102,6 +102,12 @@ async def check_status():
 async def control_mcp_server(control_params: MCPControlSchema):
     try:
         match control_params.controlCommand:
+            case "run":
+                docker_handler.unpause(contID=control_params.serverId)
+                
+                # Update redis status
+                db_handler_rds.db_update(contID=control_params.serverId, status_entry="active")
+
             case "pause":
                 docker_handler.pause(contID=control_params.serverId)
                 

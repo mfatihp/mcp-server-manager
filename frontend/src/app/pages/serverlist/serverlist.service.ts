@@ -40,7 +40,7 @@ export class ServerlistService {
 
     this.http.post(this.mcpControlUrl, {
                                         serverId: server.contID,
-                                        controlCommand: "pause",
+                                        controlCommand: "run",
                                         controlParams: {}
                                       }).subscribe({
                                                 next: (response) => {

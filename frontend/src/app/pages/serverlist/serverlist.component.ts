@@ -28,7 +28,7 @@ export class ServerlistComponent implements OnInit {
   showCreateModal = false;
 
   pauseServer(server: ServerItem) {
-    if (server.IsRunning == false) {
+    if (server.IsRunning == true) {
       this.service.pauseMCPServer(server);
     } else {
       this.service.runMCPServer(server);

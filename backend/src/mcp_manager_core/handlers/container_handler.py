@@ -38,14 +38,14 @@ class DockerHandler:
             raise e
 
 
+    def unpause(self, contID:str):
+        self.docker_cli.containers.get(container_id=contID).unpause()
 
     def pause(self, contID:str):
         self.docker_cli.containers.get(container_id=contID).pause()
 
-
     def restart(self, contID:str):
         self.docker_cli.containers.get(container_id=contID).restart()
-
 
     def delete(self, contID:str):
         self.docker_cli.containers.get(container_id=contID).kill()
