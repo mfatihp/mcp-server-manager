@@ -36,8 +36,6 @@ export class ServerlistService {
   }
 
   runMCPServer(server: ServerItem) { 
-    // TODO: Pause & Play, pause tuşu bir kere basıldığında pause butonu değişecek ve play butonu olacak. Ona göre de işlev eklenecek
-
     this.http.post(this.mcpControlUrl, {
                                         serverId: server.contID,
                                         controlCommand: "run",
@@ -54,8 +52,6 @@ export class ServerlistService {
   }
 
   pauseMCPServer(server: ServerItem) { 
-    // TODO: Pause & Play, pause tuşu bir kere basıldığında pause butonu değişecek ve play butonu olacak. Ona göre de işlev eklenecek
-
     this.http.post(this.mcpControlUrl, {
                                         serverId: server.contID,
                                         controlCommand: "pause"
@@ -89,7 +85,6 @@ export class ServerlistService {
     server.pending = true;
     const current = this.serversSubject.value;
 
-    // ➜ Immediately add to list so UI shows it
     this.serversSubject.next([...current, server]);
 
     this.mcp_schema = {
@@ -107,13 +102,12 @@ export class ServerlistService {
         server.contID = response.contID,
         server.pending = false;
 
-        // Trigger UI update
         this.serversSubject.next([...this.serversSubject.value]);
       },
       error: (error) => {
         console.log("Error:", error);
         server.pending = false;
-        // 3. Remove the created UI item if request fails
+
         const updated = this.serversSubject
           .value
           .filter(s => s !== server);
