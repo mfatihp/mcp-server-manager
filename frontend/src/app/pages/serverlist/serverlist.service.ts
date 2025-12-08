@@ -12,7 +12,7 @@ export class ServerlistService {
 
   private mcpCreateUrl = 'http://localhost:8000/manager/create_mcp_server';
   private mcpControlUrl = 'http://localhost:8000/manager/control_mcp_server';
-  private mcpCheckListUrl = 'http://localhost:8090/log_list';
+  private mcpCheckListUrl = 'http://localhost:8000/manager/check_list';
   private mcpCheckLogUrl = 'http://localhost:8090/log_list';
 
   mcp_schema!: {
@@ -29,10 +29,9 @@ export class ServerlistService {
   servers: ServerItem[] = [];
 
   async getServers() {
-    console.log("hey");
-    // const response = await fetch(this.mcpCheckListUrl, {method: "GET"});
-    // console.log(response);
-    // return this.servers;
+    const response = await fetch(this.mcpCheckListUrl, {method: "GET"});
+    console.log(response);
+    return this.servers;
   }
 
   runMCPServer(server: ServerItem) { 

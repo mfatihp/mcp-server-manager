@@ -74,8 +74,8 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
 @core.get("/manager/check_list")
 async def get_list():
     """get_list"""
-    # TODO: Check list of all mcp servers
-    pass
+    server_list = db_handler_pg.db_fetch_server_list()
+    return {"response": server_list}
 
 
 # TODO: Get MCP Server usage logs

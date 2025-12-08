@@ -25,8 +25,11 @@ class DBHandlerPG:
     
 
     def db_fetch_server_list(self):
-        # TODO: sqlalchemy ile db sorgusu oluşturulacak. "mcp_server_list" tablosunun bütün bilgileri alınacak. 
-        pass
+        # TODO: sqlalchemy ile db sorgusu oluşturulacak. "mcp_server_list" tablosunun bütün bilgileri alınacak.
+        with self.db_session_scope(self.db_engine) as session:
+            result = session.execute(select(PGItemORM)).all()
+        
+        return result
     
 
     def db_read(self):
