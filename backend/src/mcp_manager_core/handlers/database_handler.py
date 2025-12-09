@@ -97,7 +97,6 @@ class DBHandlerPG:
 
 
 ##################################### REDIS #####################################
-# TODO: Key alanı için kullanılan "contID:" her yere uygulanacak. "contID:" gibi varyasyonlar silinecek.
 
 class DBHandlerRDS:
     """Redis database handler"""

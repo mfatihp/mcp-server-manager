@@ -64,10 +64,7 @@ async def create_mcp_server(mcp_schema:MCPCreateSchema):
 
 
 
-    # TODO: Register description into the vector db.
-
-    # TODO: Register into path table eg: "*://manager/path/{funtion_name}". (Maybe)
-
+##################################################################################
 
 
 # TODO: Get MCP Server list
@@ -78,12 +75,8 @@ async def get_list():
     return {"response": server_list}
 
 
-# TODO: Get MCP Server usage logs
-# @core.get("/manager/get_logs")
-# async def get_logs():
-#     """get_logs"""
-#     # TODO: Check list of all mcp servers
-#     pass
+
+##################################################################################
 
 
 # Check MCP status
