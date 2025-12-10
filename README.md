@@ -7,8 +7,14 @@ MCP Server Manager is an all-in-one tool to create, pause, play, and delete MCP 
 ## 🎥 Screenshots
 
 <p align="center">
+<img src="docs/mcp_create.png" alt="MCP Manager Chat" width="800"/>
+</p>
+
+<p align="center">
 <img src="docs/mcp_chat.png" alt="MCP Manager Chat" width="800"/>
 </p>
+
+
 
 <br/>
 
